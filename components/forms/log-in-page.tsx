@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { ImSpinner8 } from "react-icons/im";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import GithubLoginButton from "../buttons/github-login-buton";
 
 const loginSchema = z.object({
@@ -107,7 +106,7 @@ export default function LoginPage() {
       </div>
       <GithubLoginButton />
       <p className="px-8 text-center text-sm text-muted-foreground">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link
           href="/signup"
           className="hover:text-brand underline underline-offset-4"

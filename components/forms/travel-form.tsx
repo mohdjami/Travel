@@ -104,8 +104,10 @@ export default function TravelItineraryForm() {
       setData(data.itinerary);
       setShowItinerary(true);
       setTimeout(() => {
-        if (itineraryRef.current instanceof HTMLElement) {
-          itineraryRef.current.scrollIntoView({ behavior: "smooth" });
+        if (itineraryRef.current) {
+          (itineraryRef.current as HTMLElement).scrollIntoView({
+            behavior: "smooth",
+          });
         }
       }, 100);
     } catch (error) {

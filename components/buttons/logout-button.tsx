@@ -8,8 +8,12 @@ const LogOutButton = () => {
   const handleLogout = async () => {
     const supabase = createClient();
     const { error } = await supabase.auth.signOut();
-    console.log("Logging out...");
-    router.push("/login");
+    if (error) {
+      console.log("Error signing out:", error);
+    } else {
+      console.log("Logging out...");
+      router.push("/login");
+    }
   };
   return (
     <Button

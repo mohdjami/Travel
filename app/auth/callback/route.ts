@@ -13,22 +13,25 @@ export async function GET(request: Request) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     console.log(error);
     const { data: authData, error: AuthError } = await supabase.auth.getUser();
+    if (AuthError) {
+      console.log("Error getting user:", AuthError);
+    }
     //Check if user profile already exists or not.
     const { data: userData, error: UserError } = await supabase
       .from("users")
       .select("*")
-      .eq("id", authData.user.id)
+      .eq("id", authData?.user?.id)
       .single();
     console.log("User exists");
     if (!userData || UserError) {
       const { data: userData, error: UserError } = await supabase
         .from("users")
         .insert({
-          id: authData.user.id,
-          name: authData.user.user_metadata.full_name,
-          avatar: authData.user.user_metadata.avatar_url,
-          email: authData.user.email,
-          email_verified: authData.user.user_metadata.email_verified,
+          id: authData?.user?.id,
+          name: authData?.user?.user_metadata.full_name,
+          avatar: authData?.user?.user_metadata.avatar_url,
+          email: authData?.user?.email,
+          email_verified: authData?.user?.user_metadata.email_verified,
           credits: 5,
         });
       console.log("User created");

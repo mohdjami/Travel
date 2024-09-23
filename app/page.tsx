@@ -1,5 +1,5 @@
-import TravelItineraryForm from "@/components/forms/travel-form";
+import Hero from "@/components/pages/Hero";
 
 export default function Home() {
-  return <TravelItineraryForm />;
+  return <Hero />;
 }

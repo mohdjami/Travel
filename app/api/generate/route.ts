@@ -5,38 +5,52 @@ import { getServerUser } from "@/utils/users/server";
 const API_KEY = process.env.GOOGLE_API_KEY!;
 
 export async function POST(req: Request, res: Response) {
-  const {
-    currentLocation,
-    travelLocation,
-    startDate,
-    endDate,
-    budget,
-    interests,
-  } = await req.json();
-  const supabase = createClient();
-  const user = await getServerUser();
-  if (!user) {
-    return NextResponse.json({});
-  }
-  // console.log(currentLocation, travelLocation, startDate, endDate, budget);
-  //Insert these details into user preferneces table in supabase
-  const { error: errorPreferences } = await supabase
-    .from("userpreferences")
-    .insert({
-      current_location: currentLocation,
-      travel_location: travelLocation,
-      start_date: startDate,
-      end_date: endDate,
-      //budget is in the select format
-      budget: budget,
-      interests: interests,
-      userid: user.id,
-    });
-  if (errorPreferences) {
-    console.log(errorPreferences);
-    return NextResponse.json({ error: errorPreferences.message });
-  }
-  const prompt = `Create a detailed travel itinerary for a trip from ${currentLocation} to ${travelLocation}, starting on ${startDate} and ending on ${endDate}, with a ${budget} budget. Please provide a day-by-day schedule in the following JSON format:
+  try {
+    const {
+      currentLocation,
+      travelLocation,
+      startDate,
+      endDate,
+      budget,
+      interests,
+    } = await req.json();
+    const supabase = createClient();
+    const user = await getServerUser();
+    if (!user) {
+      return NextResponse.json({
+        error: "User not found",
+      });
+    }
+    if (
+      !currentLocation ||
+      !travelLocation ||
+      !startDate ||
+      !endDate ||
+      !budget
+    ) {
+      return NextResponse.json({
+        error: "All fields are required",
+      });
+    }
+    // console.log(currentLocation, travelLocation, startDate, endDate, budget);
+    //Insert these details into user preferneces table in supabase
+    const { error: errorPreferences } = await supabase
+      .from("userpreferences")
+      .insert({
+        current_location: currentLocation,
+        travel_location: travelLocation,
+        start_date: startDate,
+        end_date: endDate,
+        //budget is in the select format
+        budget: budget,
+        interests: interests,
+        userid: user.id,
+      });
+    if (errorPreferences) {
+      console.log(errorPreferences);
+      return NextResponse.json({ error: errorPreferences.message });
+    }
+    const prompt = `Create a detailed travel itinerary for a trip from ${currentLocation} to ${travelLocation}, starting on ${startDate} and ending on ${endDate}, with a ${budget} budget. Please provide a day-by-day schedule in the following JSON format:
 
     {
     "itinerary": [
@@ -63,30 +77,43 @@ export async function POST(req: Request, res: Response) {
 
     Last but not least, send me back json object only.
 `;
-  //We will also cache the similar responses
-  const genAI = new GoogleGenerativeAI(API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-  const result = await model.generateContent(prompt);
+    //We will also cache the similar responses
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
 
-  // console.log(result.response.text());
-  const text = result.response
-    .text()
-    .replaceAll("```json", "")
-    .replaceAll("```", "");
-  const json = JSON.parse(text);
+    // console.log(result.response.text());
+    const text = result.response
+      .text()
+      .replaceAll("```json", "")
+      .replaceAll("```", "");
+    const json = JSON.parse(text);
 
-  const { error: errorResponse } = await supabase.from("response").insert({
-    name: `${currentLocation.split(",")[0]} to ${travelLocation.split(",")[0]}`,
-    response: json,
-    userid: user.id,
-  });
-  if (errorResponse) {
-    console.log(errorResponse);
-    return NextResponse.json({ error: errorResponse.message });
+    const { error: errorResponse } = await supabase.from("response").insert({
+      name: `${currentLocation.split(",")[0]} to ${
+        travelLocation.split(",")[0]
+      }`,
+      response: json,
+      userid: user.id,
+    });
+    if (errorResponse) {
+      console.log(errorResponse);
+      return NextResponse.json({ error: errorResponse.message });
+    }
+    const { error: errorInsert } = await supabase.from("itinerary").insert({
+      itinerary: json,
+      userid: user.id,
+    });
+    if (errorInsert) {
+      console.log(errorInsert);
+      return NextResponse.json({ error: errorInsert.message });
+    }
+    return NextResponse.json({ itinerary: json });
+  } catch (error) {
+    console.log(error);
+    console.log(error);
+    return NextResponse.json({
+      error: (error as Error)?.message || "An unknown error occurred",
+    });
   }
-  await supabase.from("itinerary").insert({
-    itinerary: json,
-    userid: user.id,
-  });
-  return NextResponse.json({ itinerary: json });
 }

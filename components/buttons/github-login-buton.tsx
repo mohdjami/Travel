@@ -16,14 +16,14 @@ const GithubLoginButton = () => {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: "http://localhost:3000/auth/callback",
+        redirectTo: `${process.env.NEXT_PUBLIC_URL}/auth/callback`,
       },
     });
     if (error) {
       console.log("Error signing in with GitHub:", error);
     } else {
       console.log("Redirecting to dashboard");
-      router.push("/dashboard");
+      window.location.href = data.url;
     }
     setIsLoading(false);
   };

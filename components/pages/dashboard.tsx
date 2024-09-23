@@ -82,6 +82,7 @@ export default function Dashboard({
             if (response.id == selectedResponse.id) {
               return (
                 <ItineraryDisplay
+                  key={response.id}
                   name={response.name}
                   itinerary={response.response?.itinerary}
                 />

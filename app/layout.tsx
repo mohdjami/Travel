@@ -27,7 +27,9 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getServerUser();
-
+  if (!user) {
+    return null;
+  }
   return (
     <html lang="en">
       <body

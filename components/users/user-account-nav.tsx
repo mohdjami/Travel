@@ -11,7 +11,8 @@ import { Button } from "../ui/button";
 import { Icons } from "../ui/Icons";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
-const UserAccountNav = ({ user }) => {
+import { User } from "@supabase/supabase-js";
+const UserAccountNav = ({ user }: { user: User }) => {
   const router = useRouter();
 
   const handleLogout = async () => {

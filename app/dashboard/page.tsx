@@ -15,7 +15,10 @@ const page = async () => {
     .select("*")
     .order("created_at", { ascending: false })
     .eq("userid", user.id);
-
+  if (error) {
+    console.log(error);
+    return <div>Error: {error.message}</div>;
+  }
   return <Dashboard data={data} />;
 };
 
