@@ -11,8 +11,27 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    const { data, error: userAuthError } = await supabase.auth.getUser();
-    console.log(data);
+    const { data: authData, error: AuthError } = await supabase.auth.getUser();
+    //Check if user profile already exists or not.
+    const { data: userData, error: UserError } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", authData.user.id)
+      .single();
+    console.log("User exists");
+    if (!userData || UserError) {
+      const { data: userData, error: UserError } = await supabase
+        .from("users")
+        .insert({
+          id: authData.user.id,
+          name: authData.user.user_metadata.full_name,
+          avatar: authData.user.user_metadata.avatar_url,
+          email: authData.user.email,
+          email_verified: authData.user.user_metadata.email_verified,
+          credits: 5,
+        });
+      console.log("User created");
+    }
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === "development";

@@ -4,29 +4,31 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Icons } from "./ui/Icons";
+import { createClient } from "@/utils/supabase/client";
+import UserAccountNav from "./users/user-account-nav";
+import { User } from "@supabase/supabase-js";
+import LogOutButton from "./buttons/logout-button";
 
 interface NavbarProps {
   isLoggedIn: boolean;
-  userEmail?: string;
+  user: User;
 }
 
-export default function Navbar({ isLoggedIn, userEmail }: NavbarProps) {
+export default function Navbar({ isLoggedIn, user }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
-  const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logging out...");
-    router.push("/login");
+  const handleLogout = async () => {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Error logging out:", error);
+    } else {
+      console.log("Logging out...");
+      router.push("/login");
+    }
   };
 
   return (
@@ -63,39 +65,7 @@ export default function Navbar({ isLoggedIn, userEmail }: NavbarProps) {
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             {isLoggedIn ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative h-8 w-8 rounded-full"
-                  >
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage
-                        src="/placeholder-avatar.jpg"
-                        alt="User avatar"
-                      />
-                      <AvatarFallback>
-                        {userEmail?.charAt(0).toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <Icons.user className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <Icons.settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <Icons.logout className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <UserAccountNav user={user} />
             ) : (
               <Button onClick={() => router.push("/login")} variant="default">
                 Log in
@@ -151,13 +121,13 @@ export default function Navbar({ isLoggedIn, userEmail }: NavbarProps) {
                         alt="User avatar"
                       />
                       <AvatarFallback>
-                        {userEmail?.charAt(0).toUpperCase()}
+                        {user.email?.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   </div>
                   <div className="ml-3">
                     <div className="text-base font-medium text-gray-800">
-                      {userEmail}
+                      {user.email}
                     </div>
                   </div>
                 </div>
@@ -174,13 +144,7 @@ export default function Navbar({ isLoggedIn, userEmail }: NavbarProps) {
                   >
                     Settings
                   </Button>
-                  <Button
-                    variant="ghost"
-                    onClick={handleLogout}
-                    className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 w-full text-left"
-                  >
-                    Log out
-                  </Button>
+                  <LogOutButton />
                 </div>
               </>
             ) : (
