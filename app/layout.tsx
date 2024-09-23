@@ -27,16 +27,17 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getServerUser();
-  if (!user) {
-    return null;
-  }
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Navbar isLoggedIn={!!user} user={user} />
-        <main>{children}</main>
+        <main>
+          {" "}
+          <Navbar isLoggedIn={!!user} user={user!} />
+          {children}
+        </main>
         <Toaster />
       </body>
     </html>
