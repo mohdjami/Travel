@@ -1,5 +1,5 @@
 "use client";
-import { ImSpinner8 } from "react-icons/im";
+
 import { useState, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,6 @@ import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -43,6 +42,9 @@ const formSchema = z
     endDate: z.date({
       required_error: "End date is required.",
     }),
+    interests: z.string().min(2, {
+      message: "Interests must be at least 2 characters.",
+    }),
     budget: z.enum(["low", "medium", "high"], {
       required_error: "Please select a budget range.",
     }),
@@ -52,9 +54,26 @@ const formSchema = z
     path: ["endDate"],
   });
 
+const LoadingSpinner = () => (
+  <motion.div
+    className="flex items-center justify-center h-32"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <motion.div
+      className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full"
+      animate={{ rotate: 360 }}
+      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+    />
+  </motion.div>
+);
+
 export default function TravelItineraryForm() {
   const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({
+    itinerary: [],
+  });
   const [showItinerary, setShowItinerary] = useState(false);
   const itineraryRef = useRef(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -62,39 +81,42 @@ export default function TravelItineraryForm() {
     defaultValues: {
       currentLocation: "",
       travelLocation: "",
+      interests: "",
       budget: undefined,
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    const response = await fetch("/api/generate", {
-      method: "POST",
-      body: JSON.stringify({
-        currentLocation: values.currentLocation,
-        travelLocation: values.travelLocation,
-        startDate: addDays(values.startDate, 1),
-        endDate: addDays(values.endDate, 1),
-        budget: values.budget,
-      }),
-    });
-    const data = await response.json();
-    setData(data.itinerary);
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: (
-    //     <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-    //       <code className="text-white">{data.itinerary}</code>
-    //     </pre>
-    //   ),
-    // });
-    setShowItinerary(true);
-    setLoading(false);
-    setTimeout(() => {
-      if (itineraryRef.current instanceof HTMLElement) {
-        itineraryRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 100);
+    try {
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        body: JSON.stringify({
+          currentLocation: values.currentLocation,
+          travelLocation: values.travelLocation,
+          interests: values.interests,
+          startDate: addDays(values.startDate, 1),
+          endDate: addDays(values.endDate, 1),
+          budget: values.budget,
+        }),
+      });
+      const data = await response.json();
+      setData(data.itinerary);
+      setShowItinerary(true);
+      setTimeout(() => {
+        if (itineraryRef.current instanceof HTMLElement) {
+          itineraryRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate itinerary. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -103,9 +125,9 @@ export default function TravelItineraryForm() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
+        className="flex items-center justify-center min-h-full bg-gradient-to-r from-blue-100 to-teal-100 "
       >
-        <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-xl">
+        <div className=" mt-4 w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-xl">
           <h2 className="text-3xl font-bold text-center text-gray-800">
             Travel Itinerary
           </h2>
@@ -263,16 +285,42 @@ export default function TravelItineraryForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="flex gap-10 w-full">
-                Generate Itinerary{" "}
-                {loading ? (
-                  <ImSpinner8 className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                  <></>
+              <FormField
+                control={form.control}
+                name="interests"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Interests</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Please let us know your interests."
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
+              />
+              <Button type="submit" className="w-full" disabled={loading}>
+                Generate Itinerary
               </Button>
             </form>
           </Form>
+          <AnimatePresence>
+            {loading && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <LoadingSpinner />
+                <p className="text-center mt-4 text-gray-600">
+                  Generating your personalized itinerary...
+                </p>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
       <AnimatePresence>
@@ -283,9 +331,9 @@ export default function TravelItineraryForm() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.5 }}
-            className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
+            className="flex p-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
           >
-            <ItineraryDisplay data={data!} />
+            <ItineraryDisplay itinerary={data.itinerary} />
           </motion.div>
         )}
       </AnimatePresence>

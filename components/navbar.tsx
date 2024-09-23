@@ -20,17 +20,6 @@ export default function Navbar({ isLoggedIn, user }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
-  const handleLogout = async () => {
-    const supabase = createClient();
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("Error logging out:", error);
-    } else {
-      console.log("Logging out...");
-      router.push("/login");
-    }
-  };
-
   return (
     <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -60,6 +49,12 @@ export default function Navbar({ isLoggedIn, user }: NavbarProps) {
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
               >
                 About
+              </Link>
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+              >
+                Dashboard
               </Link>
             </div>
           </div>

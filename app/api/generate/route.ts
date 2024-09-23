@@ -1,6 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
-import { itinerary } from "./data";
 import { createClient } from "@/utils/supabase/server";
 import { getServerUser } from "@/utils/users/server";
 const API_KEY = process.env.GOOGLE_API_KEY!;
@@ -21,16 +20,22 @@ export async function POST(req: Request, res: Response) {
   }
   // console.log(currentLocation, travelLocation, startDate, endDate, budget);
   //Insert these details into user preferneces table in supabase
-  await supabase.from("userpreferences").insert({
-    current_location: currentLocation,
-    travel_location: travelLocation,
-    start_date: startDate,
-    end_date: endDate,
-    //budget is in the select format
-    budget: budget,
-    interests: interests,
-    userId: user.id,
-  });
+  const { error: errorPreferences } = await supabase
+    .from("userpreferences")
+    .insert({
+      current_location: currentLocation,
+      travel_location: travelLocation,
+      start_date: startDate,
+      end_date: endDate,
+      //budget is in the select format
+      budget: budget,
+      interests: interests,
+      userid: user.id,
+    });
+  if (errorPreferences) {
+    console.log(errorPreferences);
+    return NextResponse.json({ error: errorPreferences.message });
+  }
   const prompt = `Create a detailed travel itinerary for a trip from ${currentLocation} to ${travelLocation}, starting on ${startDate} and ending on ${endDate}, with a ${budget} budget. Please provide a day-by-day schedule in the following JSON format:
 
     {
@@ -63,17 +68,25 @@ export async function POST(req: Request, res: Response) {
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
   const result = await model.generateContent(prompt);
 
-  console.log(result.response.text());
+  // console.log(result.response.text());
   const text = result.response
     .text()
     .replaceAll("```json", "")
     .replaceAll("```", "");
   const json = JSON.parse(text);
 
-  await supabase.from("response").insert({
-    name: `${currentLocation} to ${travelLocation}`,
+  const { error: errorResponse } = await supabase.from("response").insert({
+    name: `${currentLocation.split(",")[0]} to ${travelLocation.split(",")[0]}`,
     response: json,
-    userId: user.id,
+    userid: user.id,
+  });
+  if (errorResponse) {
+    console.log(errorResponse);
+    return NextResponse.json({ error: errorResponse.message });
+  }
+  await supabase.from("itinerary").insert({
+    itinerary: json,
+    userid: user.id,
   });
   return NextResponse.json({ itinerary: json });
 }

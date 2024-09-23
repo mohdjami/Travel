@@ -5,9 +5,10 @@ import { Button } from "../ui/button";
 import { ImSpinner2 } from "react-icons/im";
 import { createClient } from "@/utils/supabase/client";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
-
+import { useRouter } from "next/navigation";
 const GithubLoginButton = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const supabase = createClient();
 
   const handleGithubLogin = async () => {
@@ -19,9 +20,10 @@ const GithubLoginButton = () => {
       },
     });
     if (error) {
-      console.error("Error signing in with GitHub:", error);
+      console.log("Error signing in with GitHub:", error);
     } else {
-      window.location.href = data.url;
+      console.log("Redirecting to dashboard");
+      router.push("/dashboard");
     }
     setIsLoading(false);
   };

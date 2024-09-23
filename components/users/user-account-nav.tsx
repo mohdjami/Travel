@@ -17,6 +17,9 @@ const UserAccountNav = ({ user }) => {
   const handleLogout = async () => {
     const supabase = createClient();
     const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log("Error logging out:", error);
+    }
     console.log("Logging out...");
     router.push("/login");
   };

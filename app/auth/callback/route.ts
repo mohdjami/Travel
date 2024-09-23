@@ -11,6 +11,7 @@ export async function GET(request: Request) {
   if (code) {
     const supabase = createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
+    console.log(error);
     const { data: authData, error: AuthError } = await supabase.auth.getUser();
     //Check if user profile already exists or not.
     const { data: userData, error: UserError } = await supabase

@@ -15,6 +15,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Download, Copy, CheckCircle, FileText, Calendar } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { jsPDF } from "jspdf";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L, { LatLngExpression } from "leaflet";
+
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "/leaflet/marker-icon-2x.png",
+  iconUrl: "/leaflet/marker-icon.png",
+  shadowUrl: "/leaflet/marker-shadow.png",
+});
 
 interface Activity {
   time: string;
@@ -22,6 +32,8 @@ interface Activity {
   location: string;
   notes: string;
   cost: string;
+  long: number;
+  lat: number;
 }
 
 interface DayItinerary {
@@ -29,15 +41,47 @@ interface DayItinerary {
   activities: Activity[];
 }
 
-interface ItineraryData {
+interface ItineraryDisplayProps {
+  name?: string;
   itinerary: DayItinerary[];
 }
 
-interface ItineraryDisplayProps {
-  data: ItineraryData;
-}
+const MapComponent = ({
+  lat,
+  lng,
+  activity,
+}: {
+  lat: number;
+  lng: number;
+  activity: Activity;
+}) => {
+  return (
+    <MapContainer
+      center={[lat, lng] as LatLngExpression}
+      zoom={13}
+      style={{ height: "200px", width: "100%" }}
+    >
+      <TileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      />
+      <Marker position={[lat, lng]}>
+        <Popup>
+          <strong>{activity.activity}</strong>
+          <br />
+          {activity.location}
+          <br />
+          {activity.time}
+        </Popup>
+      </Marker>
+    </MapContainer>
+  );
+};
 
-export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
+export default function ItineraryDisplay({
+  name,
+  itinerary,
+}: ItineraryDisplayProps) {
   const [displayedContent, setDisplayedContent] = useState("");
   const [displayedActivities, setDisplayedActivities] = useState<Activity[]>(
     []
@@ -51,14 +95,15 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
 
   useEffect(() => {
     let content = "";
-    data.itinerary.forEach((day) => {
+    itinerary.forEach((day) => {
       content += `Day: ${day.day}\n\n`;
       day.activities.forEach((activity) => {
         content += `Time: ${activity.time}\n`;
         content += `Activity: ${activity.activity}\n`;
         content += `Location: ${activity.location}\n`;
         content += `Notes: ${activity.notes}\n`;
-        content += `Cost: ${activity.cost}\n\n`;
+        content += `Cost: ${activity.cost}\n`;
+        content += `Coordinates: ${activity.lat}, ${activity.long}\n\n`;
       });
       content += "---\n\n";
     });
@@ -74,14 +119,14 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
         clearInterval(interval);
         setIsStreaming(false);
       }
-    }, 1); // Increased speed (1ms interval)
+    }, 1);
 
     return () => clearInterval(interval);
-  }, [data]);
+  }, [itinerary]);
 
   useEffect(() => {
-    if (currentDayIndex < data.itinerary.length) {
-      const currentDay = data.itinerary[currentDayIndex];
+    if (currentDayIndex < itinerary.length) {
+      const currentDay = itinerary[currentDayIndex];
       if (currentActivityIndex < currentDay.activities.length) {
         const interval = setInterval(() => {
           setDisplayedActivities((prev) => [
@@ -89,7 +134,7 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
             currentDay.activities[currentActivityIndex],
           ]);
           setCurrentActivityIndex((prev) => prev + 1);
-        }, 100); // Adjust the speed of activity streaming here
+        }, 100);
 
         return () => clearInterval(interval);
       } else {
@@ -99,7 +144,7 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
     } else {
       setIsStreaming(false);
     }
-  }, [data, currentDayIndex, currentActivityIndex]);
+  }, [itinerary, currentDayIndex, currentActivityIndex]);
 
   const handleDownload = (format: "txt" | "pdf" | "ics") => {
     switch (format) {
@@ -132,7 +177,7 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
   const downloadPdf = () => {
     const doc = new jsPDF();
     const splitContent = doc.splitTextToSize(contentRef.current, 180);
-    let pageHeight = doc.internal.pageSize.height;
+    const pageHeight = doc.internal.pageSize.height;
     let cursorY = 20;
 
     for (let i = 0; i < splitContent.length; i++) {
@@ -152,7 +197,7 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
   };
 
   const downloadIcs = () => {
-    const events = data.itinerary.flatMap((day) =>
+    const events = itinerary.flatMap((day) =>
       day.activities.map((activity) => {
         const [year, month, date] = day.day
           .split(" ")[1]
@@ -227,9 +272,9 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="h-full w-full mx-auto">
       <CardHeader>
-        <CardTitle>Your Travel Itinerary</CardTitle>
+        <CardTitle>{name ? name : "Your Travel Itinerary"}</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -238,8 +283,8 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
             <TabsTrigger value="raw">Raw</TabsTrigger>
           </TabsList>
           <TabsContent value="preview">
-            <ScrollArea className="h-[600px] w-full rounded-md border p-4">
-              {data.itinerary.map((day, dayIndex) => (
+            <ScrollArea className="lg:h-[600px] h-auto w-full rounded-md border p-4">
+              {itinerary.map((day, dayIndex) => (
                 <div key={dayIndex} className="mb-6">
                   <h2 className="text-xl font-bold mb-2">{day.day}</h2>
                   {displayedActivities
@@ -262,6 +307,13 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
                         <p className="text-sm font-semibold mt-1">
                           {activity.cost}
                         </p>
+                        <div className="mt-2">
+                          <MapComponent
+                            lat={activity.lat}
+                            lng={activity.long}
+                            activity={activity}
+                          />
+                        </div>
                       </div>
                     ))}
                 </div>
@@ -269,7 +321,7 @@ export default function ItineraryDisplay({ data }: ItineraryDisplayProps) {
             </ScrollArea>
           </TabsContent>
           <TabsContent value="raw">
-            <ScrollArea className="h-[600px] w-full rounded-md border p-4">
+            <ScrollArea className="lg:h-[600px] h-auto w-full rounded-md border p-4">
               <pre className="font-mono text-sm whitespace-pre-wrap break-words">
                 {displayedContent}
               </pre>
