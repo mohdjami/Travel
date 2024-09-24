@@ -294,13 +294,15 @@ export default function ItineraryDisplay({
                             {activity.cost}
                           </p>
                         </div>
-                        <div className="flex-1 md:ml-2 mt-4 md:mt-0 md:w-1/3">
-                          <MapComponent
-                            lat={activity.lat}
-                            lng={activity.long}
-                            activity={activity}
-                          />
-                        </div>
+                        {activity.lat && activity.long && (
+                          <div className="flex-1 md:ml-2 mt-4 md:mt-0 md:w-1/3">
+                            <MapComponent
+                              lat={activity.lat}
+                              lng={activity.long}
+                              activity={activity}
+                            />
+                          </div>
+                        )}
                       </div>
                     ))}
                 </div>
