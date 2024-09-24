@@ -18,9 +18,15 @@ export async function GET(request: Request) {
       console.log("Error getting user:", AuthError);
     }
     //Check if user profile already exists or not.
-    const userData = await getUserFromDatabase(authData?.user?.id!);
-    if (!userData) {
-      await createUser(authData?.user!);
+    const userId = authData?.user?.id;
+    if (userId) {
+      const userData = await getUserFromDatabase(userId);
+      if (!userData) {
+        const user = authData?.user;
+        if (user) {
+          await createUser(user);
+        }
+      }
     }
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
