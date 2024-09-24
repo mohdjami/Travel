@@ -106,9 +106,8 @@ export async function POST(req: Request, res: Response) {
     return NextResponse.json({ itinerary: json });
   } catch (error) {
     console.log(error);
-    console.log(error);
     return NextResponse.json({
-      error: (error as Error)?.message || "An unknown error occurred",
+      error,
     });
   }
 }
