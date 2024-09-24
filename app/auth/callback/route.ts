@@ -6,8 +6,8 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   // if "next" is in param, use it as the redirect URL
-  const next = searchParams.get("next") ?? "/";
-
+  const next = searchParams.get("next") ?? "/itinerary";
+  const error_description = searchParams.get("error_description");
   if (code) {
     const supabase = createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -22,7 +22,9 @@ export async function GET(request: Request) {
       .select("*")
       .eq("id", authData?.user?.id)
       .single();
-    console.log("User exists");
+    if (userData) {
+      console.log("User exists");
+    }
     if (!userData || UserError) {
       const { data: userData, error: UserError } = await supabase
         .from("users")
@@ -34,7 +36,9 @@ export async function GET(request: Request) {
           email_verified: authData?.user?.user_metadata.email_verified,
           credits: 5,
         });
-      console.log("User created");
+      if (userData) {
+        console.log("User created");
+      }
     }
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer
