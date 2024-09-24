@@ -37,14 +37,18 @@ import {
 } from "@/components/ui/select";
 import { toast } from "@/hooks/use-toast";
 import { User } from "@supabase/supabase-js";
+import { ImSpinner2 } from "react-icons/im";
 
 const profileFormSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
+  email: z
+    .string()
+    .email({
+      message: "Please enter a valid email address.",
+    })
+    .optional(),
   bio: z.string().max(160).optional(),
 });
 
@@ -62,6 +66,7 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 type SettingsFormValues = z.infer<typeof settingsFormSchema>;
 
 export default function ProfileSettingsPage({ user }: { user: User }) {
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("profile");
   console.log(user);
   const profileForm = useForm<ProfileFormValues>({
@@ -82,11 +87,21 @@ export default function ProfileSettingsPage({ user }: { user: User }) {
     },
   });
 
-  function onProfileSubmit(data: ProfileFormValues) {
+  async function onProfileSubmit(data: ProfileFormValues) {
+    setLoading(true);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/user`, {
+      method: "PUT",
+      body: JSON.stringify({
+        email: data.email,
+        id: user.id,
+      }),
+    });
+
     toast({
       title: "Profile Updated",
       description: "Your profile information has been updated successfully.",
     });
+    setLoading(false);
   }
 
   function onSettingsSubmit(data: SettingsFormValues) {
@@ -158,6 +173,7 @@ export default function ProfileSettingsPage({ user }: { user: User }) {
                   <FormField
                     control={profileForm.control}
                     name="email"
+                    disabled
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
@@ -171,6 +187,7 @@ export default function ProfileSettingsPage({ user }: { user: User }) {
                   <FormField
                     control={profileForm.control}
                     name="bio"
+                    disabled
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Bio</FormLabel>
@@ -187,7 +204,13 @@ export default function ProfileSettingsPage({ user }: { user: User }) {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit">Update Profile</Button>
+                  <Button type="submit">
+                    {loading ? (
+                      <ImSpinner2 className="animate-spin" />
+                    ) : (
+                      "Update Profile"
+                    )}
+                  </Button>
                 </form>
               </Form>
             </CardContent>

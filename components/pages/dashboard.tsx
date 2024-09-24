@@ -9,6 +9,7 @@ import Link from "next/link";
 
 export default function Dashboard({
   data,
+  credits,
 }: {
   data: {
     id: number;
@@ -17,6 +18,7 @@ export default function Dashboard({
       itinerary: any;
     };
   }[];
+  credits: number;
 }) {
   const [selectedResponse, setSelectedResponse] = useState({
     id: data[0].id,
@@ -46,6 +48,17 @@ export default function Dashboard({
           <Button className="w-full justify-start text-white" variant="ghost">
             <Link href="/itinerary" className="flex items-center">
               New Itinerary <PlusIcon className="mr-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button className="w-full justify-start text-white" variant="ghost">
+            Credits: {credits}
+          </Button>
+          <Button className="w-full justify-start text-white" variant="ghost">
+            <Link
+              href={`/itinerary/${selectedResponse.id}`}
+              className="flex items-center"
+            >
+              View Single Itinerary
             </Link>
           </Button>
         </div>
@@ -88,9 +101,7 @@ export default function Dashboard({
             itinerary={JSON.parse(data[selectedResponse.id]?.response)}
           /> */}
 
-        <div className="flex-1 p-4 md:p-8">
-          <Link href={`/itinerary/${selectedResponse.id}`}>View</Link>
-
+        <div className="flex-1 px-4 md:px-8">
           {data.map((response) => {
             if (response.id == selectedResponse.id) {
               return (

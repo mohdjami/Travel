@@ -7,5 +7,5 @@ export async function getServerUser() {
   if (error) {
     return null;
   }
-  return data.user as User;
+  return data.user;
 }

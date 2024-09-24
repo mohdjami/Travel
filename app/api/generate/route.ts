@@ -5,8 +5,9 @@ import { getServerUser } from "@/utils/users/server";
 import {
   createResponse,
   createUserPreferences,
+  getUserCredits,
   updateUserCredits,
-} from "../db/db";
+} from "../../../utils/db/db";
 import { revalidatePath } from "next/cache";
 const API_KEY = process.env.GOOGLE_API_KEY!;
 export const maxDuration = 60;
@@ -39,6 +40,12 @@ export async function POST(req: Request, res: Response) {
     ) {
       return NextResponse.json({
         error: "All fields are required",
+      });
+    }
+    const credits = await getUserCredits(user.id);
+    if (credits <= 0) {
+      return NextResponse.json({
+        error: "You have no credits",
       });
     }
     // console.log(currentLocation, travelLocation, startDate, endDate, budget);

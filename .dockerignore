@@ -1,0 +1,7 @@
+/node_modules
+node_modules
+client/node_modules
+fireBaseCnfig.ts
+coverage
+.next/
+out/

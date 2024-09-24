@@ -1,4 +1,4 @@
-import { createUser, getUserFromDatabase } from "@/app/api/db/user";
+import { createUser, getUserFromDatabase } from "@/utils/db/user";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 // The client you created from the Server-Side Auth instructions

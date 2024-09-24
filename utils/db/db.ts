@@ -48,23 +48,24 @@ export async function createResponse(
 export async function getUserCredits(userId: string) {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from("user")
-    .select("*")
-    .eq("userid", userId);
+    .from("users")
+    .select("credits")
+    .eq("id", userId)
+    .single();
   if (error) {
     console.log(error);
     return NextResponse.json({ error: error.message });
   }
-  return data;
+  return data.credits;
 }
 
 export async function updateUserCredits(userId: string) {
   const supabase = createClient();
 
   const { error: errorUpdate } = await supabase
-    .from("user")
+    .from("users")
     .update({ credits: supabase.rpc("decrement_credits", { userid: userId }) })
-    .eq("userid", userId)
+    .eq("id", userId)
     .select("credits");
   if (errorUpdate) {
     console.log(errorUpdate);

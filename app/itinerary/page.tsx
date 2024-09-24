@@ -3,17 +3,14 @@ import { createClient } from "@/utils/supabase/server";
 import { getServerUser } from "@/utils/users/server";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { getUserCredits } from "../../utils/db/db";
 
 export default async function Home() {
   const user = await getServerUser();
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("users")
-    .select("credits")
-    .eq("id", user?.id)
-    .single();
   if (!user) {
     redirect("/login");
   }
-  return <TravelItineraryForm credits={data?.credits} />;
+  const credits = await getUserCredits(user?.id);
+
+  return <TravelItineraryForm credits={credits} />;
 }
