@@ -128,12 +128,12 @@ export default function TravelItineraryForm() {
         transition={{ duration: 0.5 }}
         className="flex items-center justify-center min-h-full bg-gradient-to-r from-blue-100 to-teal-100 "
       >
-        <div className=" mt-4 w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-xl">
+        <div className=" mt-4 w-full max-w-md p-8 mb-5 space-y-6 bg-white rounded-lg shadow-xl">
           <h2 className="text-3xl font-bold text-center text-gray-800">
             Travel Itinerary
           </h2>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
               <FormField
                 control={form.control}
                 name="currentLocation"

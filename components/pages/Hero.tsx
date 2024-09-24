@@ -42,7 +42,10 @@ export default function Hero() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-100 to-blue-200 lg:px-20">
+    <div
+      className="min-h-screen bg-gradient-to-br from-teal-100 to-blue-200 lg:px-20"
+      id="home"
+    >
       <main className="container mx-auto px-4 py-12">
         <section className="text-center mb-16">
           <motion.h2
@@ -78,7 +81,7 @@ export default function Hero() {
           </motion.div>
         </section>
 
-        <section className="mb-16">
+        <section className="mb-16" id="how-it-works">
           <h3 className="text-2xl font-semibold text-teal-800 mb-8 text-center">
             How It Works
           </h3>
@@ -101,7 +104,7 @@ export default function Hero() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>3. Download Your Itinerar</CardTitle>
+                <CardTitle>3. Download Your Itinerary</CardTitle>
               </CardHeader>
               <CardContent>
                 Download your itinerary in many formats and start your journey!
@@ -110,7 +113,7 @@ export default function Hero() {
           </div>
         </section>
 
-        <section className="mb-16">
+        <section className="mb-16" id="features">
           <h3 className="text-2xl font-semibold text-teal-800 mb-8 text-center">
             Features
           </h3>
@@ -131,7 +134,7 @@ export default function Hero() {
           </div>
         </section>
 
-        <section className="text-center">
+        <section className="text-center" id="ready-to-start">
           <h3 className="text-2xl font-semibold text-teal-800 mb-8">
             Ready to Start Planning?
           </h3>
@@ -143,12 +146,6 @@ export default function Hero() {
           </Button>
         </section>
       </main>
-
-      <footer className="bg-teal-800 text-white py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2023 TravelPlan AI. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 }

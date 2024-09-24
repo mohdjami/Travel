@@ -12,6 +12,7 @@ import { Icons } from "../ui/Icons";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/supabase-js";
+import Link from "next/link";
 const UserAccountNav = ({ user }: { user: User }) => {
   const router = useRouter();
 
@@ -44,12 +45,16 @@ const UserAccountNav = ({ user }: { user: User }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem>
-          <Icons.user className="mr-2 h-4 w-4" />
-          <span>Profile</span>
+          <Link href="/profile" className="flex items-center">
+            <Icons.user className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Icons.settings className="mr-2 h-4 w-4" />
-          <span>Settings</span>
+          <Link href="/profile" className="flex items-center">
+            <Icons.settings className="mr-2 h-4 w-4" />
+            <span>Settings</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>

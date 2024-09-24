@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { getServerUser } from "@/utils/users/server";
 import Navbar from "@/components/navbar";
+import Footer from "@/components/pages/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,6 +37,7 @@ export default async function RootLayout({
         {" "}
         <Navbar isLoggedIn={!!user} user={user!} />
         <main>{children}</main>
+        <Footer />
         <Toaster />
       </body>
     </html>

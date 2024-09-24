@@ -16,9 +16,9 @@ const page = async () => {
     .order("created_at", { ascending: false })
     .eq("userid", user?.id);
 
-  if (error) {
+  if (error || !data || data.length === 0) {
     console.log(error);
-    return <div>Error: {error.message}</div>;
+    return <div>Error: {error?.message}</div>;
   }
   return <Dashboard data={data} />;
 };

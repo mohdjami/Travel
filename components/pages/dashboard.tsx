@@ -26,6 +26,14 @@ export default function Dashboard({
     },
   });
   const [showSidebar, setShowSidebar] = useState(false);
+
+  if (selectedResponse.id == null) {
+    return (
+      <div className="flex h-full bg-gray-100">
+        <div className="m-auto text-2xl">Please Start Planning</div>
+      </div>
+    );
+  }
   return (
     <div className="flex h-full bg-gray-100">
       {/* Sidebar */}
