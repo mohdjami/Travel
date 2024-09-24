@@ -21,8 +21,7 @@ const GithubLoginButton = () => {
     if (error) {
       console.log("Error signing in with GitHub:", error);
     } else {
-      console.log("Redirecting to dashboard");
-      // window.location.href = data.url;
+      window.location.href = data.url;
     }
     setIsLoading(false);
   };
