@@ -18,7 +18,8 @@ import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { ImSpinner8 } from "react-icons/im";
 import GithubLoginButton from "../buttons/github-login-buton";
-
+import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
 const loginSchema = z.object({
   email: z.string().email({
     message: "Please enter a valid email address",
@@ -30,7 +31,7 @@ const loginSchema = z.object({
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -41,15 +42,25 @@ export default function LoginPage() {
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     setIsLoading(true);
-
+    const supabase = createClient();
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    setIsLoading(false);
-    toast({
-      title: "Login successful",
-      description: "Welcome back!",
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
     });
+    setIsLoading(false);
+    if (error) {
+      toast({
+        title: "Login failed",
+        description: error.message,
+      });
+    } else {
+      router.push("/");
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+    }
   }
 
   return (

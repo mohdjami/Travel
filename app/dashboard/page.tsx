@@ -7,14 +7,15 @@ import React from "react";
 const page = async () => {
   const supabase = createClient();
   const user = await getServerUser();
-  if (!user) {
-    redirect("/login");
-  }
+  // if (!user) {
+  //   redirect("/login");
+  // }
   const { data, error } = await supabase
     .from("response")
     .select("*")
     .order("created_at", { ascending: false })
-    .eq("userid", user.id);
+    .eq("userid", user?.id);
+
   if (error) {
     console.log(error);
     return <div>Error: {error.message}</div>;

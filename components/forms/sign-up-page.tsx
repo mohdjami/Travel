@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import {
   Form,
   FormControl,
@@ -19,6 +20,7 @@ import { toast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { ImSpinner2 } from "react-icons/im";
 import GithubLoginButton from "../buttons/github-login-buton";
+import { createClient } from "@/utils/supabase/client";
 
 const signUpSchema = z.object({
   username: z.string().min(3, {
@@ -34,7 +36,7 @@ const signUpSchema = z.object({
 
 export default function SignUpPage() {
   const [isLoading, setIsLoading] = useState(false);
-
+  const router = useRouter();
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -46,15 +48,23 @@ export default function SignUpPage() {
 
   async function onSubmit(values: z.infer<typeof signUpSchema>) {
     setIsLoading(true);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
+    const supabase = createClient();
+    const res = await fetch("/auth/users", {
+      method: "POST",
+      body: JSON.stringify(values),
+    });
     setIsLoading(false);
+    if (!res.ok) {
+      toast({
+        title: "Error",
+        description: "Something went wrong",
+      });
+    }
     toast({
       title: "Account created",
       description: "We've created your account for you.",
     });
+    router.push("/login");
   }
 
   return (

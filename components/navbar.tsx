@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Icons } from "./ui/Icons";
-import { createClient } from "@/utils/supabase/client";
 import UserAccountNav from "./users/user-account-nav";
 import { User } from "@supabase/supabase-js";
 import LogOutButton from "./buttons/logout-button";
@@ -28,7 +27,7 @@ export default function Navbar({ isLoggedIn, user }: NavbarProps) {
             <Link href="/" className="flex-shrink-0 flex items-center">
               <Icons.logo className="h-8 w-8 text-primary" />
               <span className="ml-2 text-xl font-bold text-gray-800">
-                TravelPlanner
+                TravelPlan AI
               </span>
             </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
@@ -112,7 +111,7 @@ export default function Navbar({ isLoggedIn, user }: NavbarProps) {
                   <div className="flex-shrink-0">
                     <Avatar className="h-10 w-10">
                       <AvatarImage
-                        src="/placeholder-avatar.jpg"
+                        src={user.user_metadata.avatar_url}
                         alt="User avatar"
                       />
                       <AvatarFallback>
@@ -131,13 +130,13 @@ export default function Navbar({ isLoggedIn, user }: NavbarProps) {
                     variant="ghost"
                     className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 w-full text-left"
                   >
-                    Profile
+                    <Link href="/profile">Profile</Link>
                   </Button>
                   <Button
                     variant="ghost"
                     className="block px-4 py-2 text-base font-medium text-gray-500 hover:text-gray-800 hover:bg-gray-100 w-full text-left"
                   >
-                    Settings
+                    <Link href="/profile">Settings</Link>
                   </Button>
                   <LogOutButton />
                 </div>

@@ -100,14 +100,6 @@ export async function POST(req: Request, res: Response) {
       console.log(errorResponse);
       return NextResponse.json({ error: errorResponse.message });
     }
-    const { error: errorInsert } = await supabase.from("itinerary").insert({
-      itinerary: json,
-      userid: user.id,
-    });
-    if (errorInsert) {
-      console.log(errorInsert);
-      return NextResponse.json({ error: errorInsert.message });
-    }
     return NextResponse.json({ itinerary: json });
   } catch (error) {
     console.log(error);

@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { ImSpinner2 } from "react-icons/im";
@@ -23,7 +22,7 @@ const GithubLoginButton = () => {
       console.log("Error signing in with GitHub:", error);
     } else {
       console.log("Redirecting to dashboard");
-      window.location.href = data.url;
+      // window.location.href = data.url;
     }
     setIsLoading(false);
   };

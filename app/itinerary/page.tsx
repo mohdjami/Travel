@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 
 export default function Home() {
   const user = getServerUser();
-  if (!user) {
-    redirect("/login");
-  }
+  // if (!user) {
+  //   redirect("/login");
+  // }
   return <TravelItineraryForm />;
 }

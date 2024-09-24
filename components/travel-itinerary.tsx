@@ -12,19 +12,28 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Download, Copy, CheckCircle, FileText, Calendar } from "lucide-react";
+import {
+  Download,
+  Copy,
+  CheckCircle,
+  FileText,
+  Calendar,
+  ArrowLeft,
+} from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { jsPDF } from "jspdf";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
-
-delete (L.Icon.Default.prototype as any)._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "/leaflet/marker-icon-2x.png",
-  iconUrl: "/leaflet/marker-icon.png",
-  shadowUrl: "/leaflet/marker-shadow.png",
-});
+import dynamic from "next/dynamic";
+import Link from "next/link";
+const MapComponent = dynamic(
+  () => import("@/components/map-component").then((mod) => mod.MapComponent),
+  {
+    ssr: false,
+    loading: () => <div>Loading map...</div>,
+  }
+);
 
 interface Activity {
   time: string;
@@ -45,38 +54,6 @@ interface ItineraryDisplayProps {
   name?: string;
   itinerary: DayItinerary[];
 }
-
-const MapComponent = ({
-  lat,
-  lng,
-  activity,
-}: {
-  lat: number;
-  lng: number;
-  activity: Activity;
-}) => {
-  return (
-    <MapContainer
-      center={[lat, lng] as LatLngExpression}
-      zoom={13}
-      style={{ height: "200px", width: "100%" }}
-    >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      />
-      <Marker position={[lat, lng]}>
-        <Popup>
-          <strong>{activity.activity}</strong>
-          <br />
-          {activity.location}
-          <br />
-          {activity.time}
-        </Popup>
-      </Marker>
-    </MapContainer>
-  );
-};
 
 export default function ItineraryDisplay({
   name,
@@ -273,8 +250,12 @@ export default function ItineraryDisplay({
 
   return (
     <Card className="h-full w-full mx-auto">
-      <CardHeader>
-        <CardTitle>{name ? name : "Your Travel Itinerary"}</CardTitle>
+      <CardHeader className="flex justify-between items-center">
+        <CardTitle>{name || "Your Travel Itinerary"}</CardTitle>
+        <Link href="/dashboard" className="flex items-center">
+          <ArrowLeft size={16} className="mr-2" />
+          Back to Dashboard
+        </Link>
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -282,7 +263,10 @@ export default function ItineraryDisplay({
             <TabsTrigger value="preview">Preview</TabsTrigger>
             <TabsTrigger value="raw">Raw</TabsTrigger>
           </TabsList>
-          <TabsContent value="preview">
+          <TabsContent
+            value="preview"
+            className="flex flex-col md:flex-row gap-4 mx-20"
+          >
             <ScrollArea className="lg:h-[600px] h-auto w-full rounded-md border p-4">
               {itinerary.map((day, dayIndex) => (
                 <div key={dayIndex} className="mb-6">
@@ -295,19 +279,22 @@ export default function ItineraryDisplay({
                     )
                     .map((activity, actIndex) => (
                       <div
+                        className="mb-4 p-4 bg-secondary rounded-lg flex flex-col md:flex-row "
                         key={actIndex}
-                        className="mb-4 p-4 bg-secondary rounded-lg"
                       >
-                        <p className="font-semibold">{activity.time}</p>
-                        <p className="text-lg">{activity.activity}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {activity.location}
-                        </p>
-                        <p className="text-sm mt-2">{activity.notes}</p>
-                        <p className="text-sm font-semibold mt-1">
-                          {activity.cost}
-                        </p>
-                        <div className="mt-2">
+                        {" "}
+                        <div key={actIndex} className="flex-1 md:mr-2">
+                          <p className="font-semibold">{activity.time}</p>
+                          <p className="text-lg">{activity.activity}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {activity.location}
+                          </p>
+                          <p className="text-sm mt-2">{activity.notes}</p>
+                          <p className="text-sm font-semibold mt-1">
+                            {activity.cost}
+                          </p>
+                        </div>
+                        <div className="flex-1 md:ml-2 mt-4 md:mt-0 md:w-1/3">
                           <MapComponent
                             lat={activity.lat}
                             lng={activity.long}
@@ -320,8 +307,8 @@ export default function ItineraryDisplay({
               ))}
             </ScrollArea>
           </TabsContent>
-          <TabsContent value="raw">
-            <ScrollArea className="lg:h-[600px] h-auto w-full rounded-md border p-4">
+          <TabsContent value="raw" className="mx-20">
+            <ScrollArea className="lg:h-[600px] h-auto w-full rounded-md border p-4 ">
               <pre className="font-mono text-sm whitespace-pre-wrap break-words">
                 {displayedContent}
               </pre>

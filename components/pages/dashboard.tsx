@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { PlusIcon, MessageSquare } from "lucide-react";
 import ItineraryDisplay from "../travel-itinerary";
+import Link from "next/link";
 
 export default function Dashboard({
   data,
@@ -35,8 +36,9 @@ export default function Dashboard({
       >
         <div className="p-4">
           <Button className="w-full justify-start text-white" variant="ghost">
-            <PlusIcon className="mr-2 h-4 w-4" />
-            New Chat
+            <Link href="/itinerary" className="flex items-center">
+              New Itinerary <PlusIcon className="mr-2 h-4 w-4" />
+            </Link>
           </Button>
         </div>
         <ScrollArea className="h-[calc(100vh-5rem)]">
@@ -77,7 +79,10 @@ export default function Dashboard({
         {/* <ItineraryDisplay
             itinerary={JSON.parse(data[selectedResponse.id]?.response)}
           /> */}
+
         <div className="flex-1 p-4 md:p-8">
+          <Link href={`/itinerary/${selectedResponse.id}`}>View</Link>
+
           {data.map((response) => {
             if (response.id == selectedResponse.id) {
               return (

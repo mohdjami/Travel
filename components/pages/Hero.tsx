@@ -15,6 +15,7 @@ import {
   DollarSign,
   Compass,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function Hero() {
   const features = [
@@ -41,14 +42,7 @@ export default function Hero() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-100 to-blue-200">
-      <header className="container mx-auto px-4 py-8">
-        <nav className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-teal-800">TravelPlan AI</h1>
-          <Button variant="outline">Sign In</Button>
-        </nav>
-      </header>
-
+    <div className="min-h-screen bg-gradient-to-br from-teal-100 to-blue-200 lg:px-20">
       <main className="container mx-auto px-4 py-12">
         <section className="text-center mb-16">
           <motion.h2
@@ -76,8 +70,10 @@ export default function Hero() {
               size="lg"
               className="bg-teal-600 hover:bg-teal-700 text-white"
             >
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <Link href="/itinerary" className="flex items-center">
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
           </motion.div>
         </section>
@@ -105,10 +101,10 @@ export default function Hero() {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>3. Customize and Enjoy</CardTitle>
+                <CardTitle>3. Download Your Itinerar</CardTitle>
               </CardHeader>
               <CardContent>
-                Fine-tune your itinerary and get ready for your trip!
+                Download your itinerary in many formats and start your journey!
               </CardContent>
             </Card>
           </div>
@@ -139,12 +135,11 @@ export default function Hero() {
           <h3 className="text-2xl font-semibold text-teal-800 mb-8">
             Ready to Start Planning?
           </h3>
-          <Button
-            size="lg"
-            className="bg-teal-600 hover:bg-teal-700 text-white"
-          >
-            Create Your Itinerary
-            <ArrowRight className="ml-2 h-4 w-4" />
+          <Button className="bg-teal-600 hover:bg-teal-700 text-white">
+            <Link href="/itinerary" className="flex items-center">
+              Create Your Itinerary
+              <ArrowRight className="ml-1 h-2 w-2" />
+            </Link>
           </Button>
         </section>
       </main>

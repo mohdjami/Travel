@@ -29,13 +29,16 @@ const UserAccountNav = ({ user }: { user: User }) => {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={user?.user_metadata?.avatar_url}
-              alt="User avatar"
-            />
-            <AvatarFallback>
-              {user?.user_metadata?.full_name?.charAt(0).toUpperCase()}
-            </AvatarFallback>
+            {user?.user_metadata?.avatar_url ? (
+              <AvatarImage
+                src={user?.user_metadata?.avatar_url}
+                alt="User avatar"
+              />
+            ) : (
+              <AvatarFallback>
+                {user?.email?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            )}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>

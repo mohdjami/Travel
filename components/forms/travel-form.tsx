@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -333,7 +332,7 @@ export default function TravelItineraryForm() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.5 }}
-            className="flex p-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
+            className="flex px-32 p-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
           >
             <ItineraryDisplay itinerary={data.itinerary} />
           </motion.div>

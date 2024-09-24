@@ -1,3 +1,4 @@
+import { User } from "@supabase/supabase-js";
 import { createClient } from "../supabase/server";
 
 export async function getServerUser() {
@@ -6,5 +7,5 @@ export async function getServerUser() {
   if (error) {
     return null;
   }
-  return data.user;
+  return data.user as User;
 }
