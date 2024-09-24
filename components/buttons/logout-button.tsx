@@ -11,8 +11,8 @@ const LogOutButton = () => {
     if (error) {
       console.log("Error signing out:", error);
     } else {
-      console.log("Logging out...");
       router.push("/login");
+      router.refresh();
     }
   };
   return (

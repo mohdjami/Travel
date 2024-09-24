@@ -43,24 +43,23 @@ export default function LoginPage() {
   async function onSubmit(values: z.infer<typeof loginSchema>) {
     setIsLoading(true);
     const supabase = createClient();
-    // Simulate API call
     const { data, error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
-    setIsLoading(false);
     if (error) {
       toast({
         title: "Login failed",
         description: error.message,
       });
     } else {
-      router.refresh();
       router.push("/itinerary");
+      router.refresh();
       toast({
         title: "Login successful",
         description: "Welcome back!",
       });
+      setIsLoading(false);
     }
   }
 

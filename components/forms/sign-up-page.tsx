@@ -53,7 +53,6 @@ export default function SignUpPage() {
       method: "POST",
       body: JSON.stringify(values),
     });
-    setIsLoading(false);
     if (!res.ok) {
       toast({
         title: "Error",
@@ -65,6 +64,8 @@ export default function SignUpPage() {
       description: "We've created your account for you.",
     });
     router.push("/login");
+    router.refresh();
+    setIsLoading(false);
   }
 
   return (

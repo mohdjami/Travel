@@ -21,8 +21,8 @@ const UserAccountNav = ({ user }: { user: User }) => {
     if (error) {
       console.log("Error logging out:", error);
     }
-    console.log("Logging out...");
     router.push("/login");
+    router.refresh();
   };
   return (
     <DropdownMenu>
