@@ -1,3 +1,4 @@
+import { createUser, getUserFromDatabase } from "@/app/api/db/user";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 // The client you created from the Server-Side Auth instructions
@@ -17,28 +18,9 @@ export async function GET(request: Request) {
       console.log("Error getting user:", AuthError);
     }
     //Check if user profile already exists or not.
-    const { data: userData, error: UserError } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", authData?.user?.id)
-      .single();
-    if (userData) {
-      console.log("User exists");
-    }
-    if (!userData || UserError) {
-      const { data: userData, error: UserError } = await supabase
-        .from("users")
-        .insert({
-          id: authData?.user?.id,
-          name: authData?.user?.user_metadata.full_name,
-          avatar: authData?.user?.user_metadata.avatar_url,
-          email: authData?.user?.email,
-          email_verified: authData?.user?.user_metadata.email_verified,
-          credits: 5,
-        });
-      if (userData) {
-        console.log("User created");
-      }
+    const userData = await getUserFromDatabase(authData?.user?.id!);
+    if (!userData) {
+      await createUser(authData?.user!);
     }
     if (!error) {
       const forwardedHost = request.headers.get("x-forwarded-host"); // original origin before load balancer

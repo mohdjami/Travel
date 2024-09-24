@@ -68,7 +68,7 @@ const LoadingSpinner = () => (
   </motion.div>
 );
 
-export default function TravelItineraryForm() {
+export default function TravelItineraryForm({ credits }: { credits: number }) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     itinerary: [],
@@ -132,6 +132,9 @@ export default function TravelItineraryForm() {
           <h2 className="text-3xl font-bold text-center text-gray-800">
             Travel Itinerary
           </h2>
+          <p className="text-center text-gray-600">
+            You have {credits} credits remaining.
+          </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
               <FormField

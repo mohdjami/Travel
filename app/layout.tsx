@@ -28,13 +28,14 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const user = await getServerUser();
-
+  // const credits = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/credits`);
+  // const creditsData = await credits.json();
+  // console.log(creditsData);
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {" "}
         <Navbar isLoggedIn={!!user} user={user!} />
         <main>{children}</main>
         <Footer />

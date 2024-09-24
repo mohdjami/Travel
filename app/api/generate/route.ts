@@ -2,6 +2,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getServerUser } from "@/utils/users/server";
+import {
+  createResponse,
+  createUserPreferences,
+  updateUserCredits,
+} from "../db/db";
+import { revalidatePath } from "next/cache";
 const API_KEY = process.env.GOOGLE_API_KEY!;
 export const maxDuration = 60;
 export async function POST(req: Request, res: Response) {
@@ -37,22 +43,15 @@ export async function POST(req: Request, res: Response) {
     }
     // console.log(currentLocation, travelLocation, startDate, endDate, budget);
     //Insert these details into user preferneces table in supabase
-    const { error: errorPreferences } = await supabase
-      .from("userpreferences")
-      .insert({
-        current_location: currentLocation,
-        travel_location: travelLocation,
-        start_date: startDate,
-        end_date: endDate,
-        //budget is in the select format
-        budget: budget,
-        interests: interests,
-        userid: user.id,
-      });
-    if (errorPreferences) {
-      console.log(errorPreferences);
-      return NextResponse.json({ error: errorPreferences.message });
-    }
+    await createUserPreferences(
+      currentLocation,
+      travelLocation,
+      startDate,
+      endDate,
+      budget,
+      interests,
+      user.id
+    );
     const prompt = `Create a detailed travel itinerary for a trip from ${currentLocation} to ${travelLocation}, starting on ${startDate} and ending on ${endDate}, with a ${budget} budget. Please provide a day-by-day schedule in the following JSON format:
 
     {
@@ -91,18 +90,12 @@ export async function POST(req: Request, res: Response) {
       .replaceAll("```json", "")
       .replaceAll("```", "");
     const json = JSON.parse(text);
-
-    const { error: errorResponse } = await supabase.from("response").insert({
-      name: `${currentLocation.split(",")[0]} to ${
-        travelLocation.split(",")[0]
-      }`,
-      response: json,
-      userid: user.id,
-    });
-    if (errorResponse) {
-      console.log(errorResponse);
-      return NextResponse.json({ error: errorResponse.message });
-    }
+    const name = `${currentLocation.split(",")[0]} to ${
+      travelLocation.split(",")[0]
+    }`;
+    await createResponse(name, json, user.id);
+    await updateUserCredits(user.id);
+    revalidatePath("/");
     return NextResponse.json({ itinerary: json });
   } catch (error) {
     console.log(error);
