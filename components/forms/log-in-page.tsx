@@ -55,7 +55,8 @@ export default function LoginPage() {
         description: error.message,
       });
     } else {
-      router.push("/");
+      router.refresh();
+      router.push("/itinerary");
       toast({
         title: "Login successful",
         description: "Welcome back!",

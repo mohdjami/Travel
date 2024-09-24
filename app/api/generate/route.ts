@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { getServerUser } from "@/utils/users/server";
 const API_KEY = process.env.GOOGLE_API_KEY!;
-
+export const maxDuration = 60;
 export async function POST(req: Request, res: Response) {
   try {
     const {
@@ -14,8 +14,11 @@ export async function POST(req: Request, res: Response) {
       budget,
       interests,
     } = await req.json();
-    const supabase = createClient();
-    const user = await getServerUser();
+
+    const [supabase, user] = await Promise.all([
+      createClient(),
+      getServerUser(),
+    ]);
     if (!user) {
       return NextResponse.json({
         error: "User not found",
