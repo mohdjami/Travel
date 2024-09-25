@@ -252,10 +252,6 @@ export default function ItineraryDisplay({
     <Card className="h-full w-full mx-auto">
       <CardHeader className="flex justify-between items-center">
         <CardTitle>{name || "Your Travel Itinerary"}</CardTitle>
-        <Link href="/dashboard" className="flex items-center">
-          <ArrowLeft size={16} className="mr-2" />
-          Back to Dashboard
-        </Link>
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
