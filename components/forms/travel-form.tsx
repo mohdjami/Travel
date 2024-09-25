@@ -90,7 +90,17 @@ export default function TravelItineraryForm({ credits }: { credits: number }) {
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
-        body: JSON.stringify({}),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          currentLocation: values.currentLocation,
+          travelLocation: values.travelLocation,
+          interests: values.interests,
+          startDate: addDays(values.startDate, 1),
+          endDate: addDays(values.endDate, 1),
+          budget: values.budget,
+        }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -99,6 +109,7 @@ export default function TravelItineraryForm({ credits }: { credits: number }) {
           description: "Failed to generate itinerary. Please try again.",
           variant: "destructive",
         });
+        return;
       }
       setData(data.itinerary);
       setShowItinerary(true);
