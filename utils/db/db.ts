@@ -61,12 +61,9 @@ export async function getUserCredits(userId: string) {
 
 export async function updateUserCredits(userId: string) {
   const supabase = createClient();
-
-  const { error: errorUpdate } = await supabase
-    .from("users")
-    .update({ credits: supabase.rpc("decrement_credits", { userid: userId }) })
-    .eq("id", userId)
-    .select("credits");
+  const { error: errorUpdate } = await supabase.rpc("decrement", {
+    user_id: userId,
+  });
   if (errorUpdate) {
     console.log(errorUpdate);
     return NextResponse.json({ error: errorUpdate.message });

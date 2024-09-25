@@ -27,16 +27,10 @@ export default async function Navbar({ isLoggedIn, user }: NavbarProps) {
             </Link>
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
-                href="/"
+                href="/#home"
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900"
               >
                 Home
-              </Link>
-              <Link
-                href="/itinerary"
-                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
-              >
-                Itinerary
               </Link>
               <Link
                 href="/about"
@@ -44,6 +38,19 @@ export default async function Navbar({ isLoggedIn, user }: NavbarProps) {
               >
                 About
               </Link>
+              <Link
+                href="/#features"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+              >
+                Features
+              </Link>
+              <Link
+                href="/itinerary"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+              >
+                Itinerary
+              </Link>
+
               <Link
                 href="/dashboard"
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
@@ -75,22 +82,28 @@ export default async function Navbar({ isLoggedIn, user }: NavbarProps) {
               <SheetContent side="right" className="w-[300px] sm:w-[400px]">
                 <nav className="flex flex-col gap-4">
                   <Link
-                    href="/"
-                    className="block px-2 py-1 text-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                    href="/#home"
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-900"
                   >
                     Home
                   </Link>
                   <Link
-                    href="/itinerary"
-                    className="block px-2 py-1 text-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
-                  >
-                    Itinerary
-                  </Link>
-                  <Link
                     href="/about"
-                    className="block px-2 py-1 text-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
                   >
                     About
+                  </Link>
+                  <Link
+                    href="/#features"
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+                  >
+                    Features
+                  </Link>
+                  <Link
+                    href="/itinerary"
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+                  >
+                    Itinerary
                   </Link>
                   <Link
                     href="/dashboard"
@@ -123,7 +136,7 @@ export default async function Navbar({ isLoggedIn, user }: NavbarProps) {
                         Profile
                       </Link>
                       <Link
-                        href="/settings"
+                        href="/profile"
                         className="block px-2 py-1 text-lg font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50"
                       >
                         Settings

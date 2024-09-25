@@ -13,15 +13,15 @@ export async function GET(req: Request, res: Response) {
       .single();
     if (!data) {
       console.log("User not found");
-      return NextResponse.json({ error: "User not found" });
+      return NextResponse.json({ error: "User not found" }, { status: 400 });
     }
     if (error) {
       console.log(error);
-      return NextResponse.json({ error });
+      return NextResponse.json({ error }, { status: 400 });
     }
     return NextResponse.json({ credits: data?.credits });
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error });
+    return NextResponse.json({ error }, { status: 400 });
   }
 }

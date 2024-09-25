@@ -54,18 +54,20 @@ export default function SignUpPage() {
       body: JSON.stringify(values),
     });
     if (!res.ok) {
+      setIsLoading(false);
       toast({
         title: "Error",
         description: "Something went wrong",
       });
+    } else {
+      toast({
+        title: "Account created",
+        description: "We've created your account for you.",
+      });
+      router.push("/login");
+      router.refresh();
+      setIsLoading(false);
     }
-    toast({
-      title: "Account created",
-      description: "We've created your account for you.",
-    });
-    router.push("/login");
-    router.refresh();
-    setIsLoading(false);
   }
 
   return (
@@ -79,7 +81,7 @@ export default function SignUpPage() {
         </p>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FormField
             control={form.control}
             name="username"

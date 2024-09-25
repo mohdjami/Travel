@@ -27,9 +27,12 @@ export async function POST(req: Request, res: Response) {
       getServerUser(),
     ]);
     if (!user) {
-      return NextResponse.json({
-        error: "User not found",
-      });
+      return NextResponse.json(
+        {
+          error: "User not found",
+        },
+        { status: 400 }
+      );
     }
     if (
       !currentLocation ||
@@ -38,15 +41,21 @@ export async function POST(req: Request, res: Response) {
       !endDate ||
       !budget
     ) {
-      return NextResponse.json({
-        error: "All fields are required",
-      });
+      return NextResponse.json(
+        {
+          error: "All fields are required",
+        },
+        { status: 400 }
+      );
     }
     const credits = await getUserCredits(user.id);
     if (credits <= 0) {
-      return NextResponse.json({
-        error: "You have no credits",
-      });
+      return NextResponse.json(
+        {
+          error: "You have no credits",
+        },
+        { status: 400 }
+      );
     }
     // console.log(currentLocation, travelLocation, startDate, endDate, budget);
     //Insert these details into user preferneces table in supabase
@@ -106,8 +115,11 @@ export async function POST(req: Request, res: Response) {
     return NextResponse.json({ itinerary: json });
   } catch (error) {
     console.log(error);
-    return NextResponse.json({
-      error,
-    });
+    return NextResponse.json(
+      {
+        error,
+      },
+      { status: 400 }
+    );
   }
 }

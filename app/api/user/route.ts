@@ -13,11 +13,11 @@ export async function PUT(request: NextRequest) {
       .eq("id", id)
       .single();
     if (error) {
-      return NextResponse.json({ error });
+      return NextResponse.json({ error }, { status: 400 });
     }
     return NextResponse.json({ data });
   } catch (error) {
     console.log(error);
-    return NextResponse.json({ error });
+    return NextResponse.json({ error }, { status: 400 });
   }
 }

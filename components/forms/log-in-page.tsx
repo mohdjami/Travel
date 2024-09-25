@@ -41,24 +41,35 @@ export default function LoginPage() {
   });
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
-    setIsLoading(true);
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
-    if (error) {
-      toast({
-        title: "Login failed",
-        description: error.message,
+    try {
+      setIsLoading(true);
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: values.email,
+        password: values.password,
       });
-    } else {
-      router.push("/itinerary");
-      router.refresh();
+      if (error) {
+        setIsLoading(false);
+        toast({
+          title: "Login failed",
+          description: error.message,
+        });
+      } else {
+        router.push("/itinerary");
+        router.refresh();
+        toast({
+          title: "Login successful",
+          description: "Welcome back!",
+        });
+        setIsLoading(false);
+      }
+    } catch (error) {
       toast({
-        title: "Login successful",
-        description: "Welcome back!",
+        title: "Error",
+        description: "Failed to login. Please try again.",
+        variant: "destructive",
       });
+    } finally {
       setIsLoading(false);
     }
   }
@@ -72,7 +83,7 @@ export default function LoginPage() {
         </p>
       </div>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
           <FormField
             control={form.control}
             name="email"
