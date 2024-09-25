@@ -325,7 +325,7 @@ export default function ItineraryDisplay({
         </Button>
         <Button
           onClick={() => handleDownload("pdf")}
-          disabled={true}
+          // disabled={true}
           className="flex items-center gap-2"
         >
           <FileText size={16} />
@@ -333,7 +333,7 @@ export default function ItineraryDisplay({
         </Button>
         <Button
           onClick={() => handleDownload("ics")}
-          // disabled={isStreaming}
+          disabled={true}
           className="flex items-center gap-2"
         >
           <Calendar size={16} />
