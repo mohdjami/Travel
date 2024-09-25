@@ -317,7 +317,7 @@ export default function ItineraryDisplay({
       <CardFooter className="flex flex-wrap justify-between gap-2">
         <Button
           onClick={() => handleDownload("txt")}
-          disabled={isStreaming}
+          // disabled={isStreaming}
           className="flex items-center gap-2"
         >
           <Download size={16} />
@@ -325,7 +325,7 @@ export default function ItineraryDisplay({
         </Button>
         <Button
           onClick={() => handleDownload("pdf")}
-          disabled={isStreaming}
+          disabled={true}
           className="flex items-center gap-2"
         >
           <FileText size={16} />
@@ -333,7 +333,7 @@ export default function ItineraryDisplay({
         </Button>
         <Button
           onClick={() => handleDownload("ics")}
-          disabled={isStreaming}
+          // disabled={isStreaming}
           className="flex items-center gap-2"
         >
           <Calendar size={16} />
@@ -341,7 +341,7 @@ export default function ItineraryDisplay({
         </Button>
         <Button
           onClick={handleCopy}
-          disabled={isStreaming}
+          // disabled={isStreaming}
           className="flex items-center gap-2"
         >
           {isCopied ? <CheckCircle size={16} /> : <Copy size={16} />}
