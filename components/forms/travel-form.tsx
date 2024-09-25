@@ -348,7 +348,7 @@ export default function TravelItineraryForm({ credits }: { credits: number }) {
             transition={{ duration: 0.5 }}
             className="flex px-32 p-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
           >
-            {/* <ItineraryDisplay itinerary={data.itinerary} /> */}
+            <ItineraryDisplay itinerary={data.itinerary} />
           </motion.div>
         )}
       </AnimatePresence>
