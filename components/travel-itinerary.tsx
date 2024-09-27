@@ -251,7 +251,7 @@ export default function ItineraryDisplay({
   return (
     <Card className="h-full w-full mx-auto">
       <CardHeader className="flex justify-between items-center">
-        <CardTitle>{name || "Your Travel Itinerary"}</CardTitle>
+        <CardTitle>{name || `${itinerary} day itinerary`}</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>

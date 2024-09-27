@@ -75,6 +75,7 @@ export default function TravelItineraryForm({
   initialCredits: number;
   setCredits: (credits: number) => void;
 }) {
+  const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     itinerary: [],
@@ -109,6 +110,9 @@ export default function TravelItineraryForm({
           budget: values.budget,
         }),
       });
+      setName(
+        `${values.currentLocation} to ${values.travelLocation} itinerary`
+      );
       const data = await response.json();
       if (!response.ok) {
         toast({
@@ -357,7 +361,11 @@ export default function TravelItineraryForm({
             transition={{ duration: 0.5 }}
             className="flex px-32 p-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
           >
-            <ItineraryDisplay key={itineraryKey} itinerary={data.itinerary} />
+            <ItineraryDisplay
+              key={itineraryKey}
+              name={name}
+              itinerary={data.itinerary}
+            />
           </motion.div>
         )}
       </AnimatePresence>
