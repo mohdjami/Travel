@@ -5,10 +5,15 @@ import { getUserCredits } from "../../utils/db/db";
 
 export default async function Home() {
   const user = await getServerUser();
+  console.log("user", user);
   if (!user) {
     redirect("/login");
   }
   const credits = await getUserCredits(user?.id);
-
+  
+  console.log("credits", credits);
+  if (!credits) {
+    return <ItineraryHome initialCredits={5} />;
+  }
   return <ItineraryHome initialCredits={credits} />;
 }

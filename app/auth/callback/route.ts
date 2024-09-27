@@ -1,5 +1,6 @@
 import { createUser, getUserFromDatabase } from "@/utils/db/user";
 import { createClient } from "@/utils/supabase/server";
+import { getServerUser } from "@/utils/users/server";
 import { NextResponse } from "next/server";
 // The client you created from the Server-Side Auth instructions
 
@@ -11,20 +12,25 @@ export async function GET(request: Request) {
   const error_description = searchParams.get("error_description");
   if (code) {
     const supabase = createClient();
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
-    console.log(error);
-    const { data: authData, error: AuthError } = await supabase.auth.getUser();
-    if (AuthError) {
-      console.log("Error getting user:", AuthError);
+    const { data: userData, error } =
+      await supabase.auth.exchangeCodeForSession(code);
+    console.log(userData.user, error);
+    // const user = await supabase.from("auth.users").select("*");
+    // console.log("user", user);
+    if (!userData) {
+      console.log("Error getting user:");
+      return NextResponse.redirect(`${origin}/auth/auth-code-error`);
     }
     //Check if user profile already exists or not.
-    const userId = authData?.user?.id;
+    const userId = userData?.user?.id;
+    console.log("userId", userId);
     if (userId) {
-      const userData = await getUserFromDatabase(userId);
-      if (!userData) {
-        const user = authData?.user;
-        if (user) {
-          await createUser(user);
+      const userExistsInDatabase = await getUserFromDatabase(userId);
+      console.log("userData if usser exists", userData);
+      if (userExistsInDatabase === null) {
+        if (userData.user) {
+          await createUser(userData.user);
+          console.log("userData if user not exists", userData);
         }
       }
     }

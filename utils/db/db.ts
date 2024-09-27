@@ -53,7 +53,7 @@ export async function getUserCredits(userId: string) {
     .eq("id", userId)
     .single();
   if (error) {
-    console.log(error);
+    console.log("error from credits:", error);
     return NextResponse.json({ error: error.message });
   }
   return data.credits;

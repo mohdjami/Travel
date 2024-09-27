@@ -34,8 +34,8 @@ export async function getUserFromDatabase(userId: string) {
     console.log("User exists");
   }
   if (UserError) {
-    console.log("Error getting user:", UserError);
-    return UserError;
+    console.log("Error getting user from user.ts:", UserError);
+    return null;
   }
   return userData;
 }
