@@ -1,7 +1,5 @@
-import TravelItineraryForm from "@/components/forms/travel-form";
-import { createClient } from "@/utils/supabase/server";
+import ItineraryHome from "@/components/itinerary-page";
 import { getServerUser } from "@/utils/users/server";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getUserCredits } from "../../utils/db/db";
 
@@ -12,5 +10,5 @@ export default async function Home() {
   }
   const credits = await getUserCredits(user?.id);
 
-  return <TravelItineraryForm credits={credits} />;
+  return <ItineraryHome initialCredits={credits} />;
 }

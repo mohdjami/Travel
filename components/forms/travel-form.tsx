@@ -68,11 +68,18 @@ const LoadingSpinner = () => (
   </motion.div>
 );
 
-export default function TravelItineraryForm({ credits }: { credits: number }) {
+export default function TravelItineraryForm({
+  initialCredits,
+  setCredits,
+}: {
+  initialCredits: number;
+  setCredits: (credits: number) => void;
+}) {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState({
     itinerary: [],
   });
+  const [itineraryKey, setItineraryKey] = useState(0);
   const [showItinerary, setShowItinerary] = useState(false);
   const itineraryRef = useRef(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -113,6 +120,8 @@ export default function TravelItineraryForm({ credits }: { credits: number }) {
       }
       setData(data.itinerary);
       setShowItinerary(true);
+      setItineraryKey((prevKey) => prevKey + 1);
+      setCredits(initialCredits - 1);
       setTimeout(() => {
         if (itineraryRef.current) {
           (itineraryRef.current as HTMLElement).scrollIntoView({
@@ -144,7 +153,7 @@ export default function TravelItineraryForm({ credits }: { credits: number }) {
             Travel Itinerary
           </h2>
           <p className="text-center text-gray-600">
-            You have {credits} credits remaining.
+            You have {initialCredits} credits remaining.
           </p>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 ">
@@ -348,7 +357,7 @@ export default function TravelItineraryForm({ credits }: { credits: number }) {
             transition={{ duration: 0.5 }}
             className="flex px-32 p-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
           >
-            <ItineraryDisplay itinerary={data.itinerary} />
+            <ItineraryDisplay key={itineraryKey} itinerary={data.itinerary} />
           </motion.div>
         )}
       </AnimatePresence>
