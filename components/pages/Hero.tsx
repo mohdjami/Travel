@@ -16,6 +16,8 @@ import {
   Compass,
 } from "lucide-react";
 import Link from "next/link";
+import { MdDeveloperMode } from "react-icons/md";
+import { BsYoutube } from "react-icons/bs";
 
 export default function Hero() {
   const features = [
@@ -76,6 +78,18 @@ export default function Hero() {
               <Link href="/itinerary" className="flex items-center">
                 Get Started
                 <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>{" "}
+            <Button
+              size="lg"
+              className="bg-teal-600 hover:bg-teal-700 text-white"
+            >
+              <Link
+                href="https://youtu.be/oeioDsKQ4cQ?si=U35aBhen3L3zJApq"
+                className="flex items-center"
+              >
+                Watch Demo
+                <BsYoutube className="ml-2 h-4 w-4" />
               </Link>
             </Button>
           </motion.div>

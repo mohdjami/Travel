@@ -7,6 +7,7 @@ import { User } from "@supabase/supabase-js";
 import LogOutButton from "./buttons/logout-button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { createClient } from "@/utils/supabase/server";
+import { ArrowBigUp } from "lucide-react";
 
 interface NavbarProps {
   isLoggedIn: boolean;
@@ -43,6 +44,12 @@ export default async function Navbar({ isLoggedIn, user }: NavbarProps) {
                 className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
               >
                 Features
+              </Link>
+              <Link
+                href="https://rust-polyester-bf7.notion.site/Travel-Itineraries-d2c6c879286945ecb15769e098ad9911"
+                className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+              >
+                Docs
               </Link>
               <Link
                 href="/itinerary"
@@ -98,7 +105,13 @@ export default async function Navbar({ isLoggedIn, user }: NavbarProps) {
                     className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
                   >
                     Features
-                  </Link>
+                  </Link>{" "}
+                  <Link
+                    href="https://rust-polyester-bf7.notion.site/Travel-Itineraries-d2c6c879286945ecb15769e098ad9911"
+                    className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"
+                  >
+                    Docs
+                  </Link>{" "}
                   <Link
                     href="/itinerary"
                     className="inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-900"

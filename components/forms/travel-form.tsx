@@ -359,13 +359,15 @@ export default function TravelItineraryForm({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.5 }}
-            className="flex px-32 p-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
+            className="flex px-4 sm:px-8 md:px-16 lg:px-24 xl:px-32 py-6 sm:py-8 md:py-10 items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-teal-100"
           >
-            <ItineraryDisplay
-              key={itineraryKey}
-              name={name}
-              itinerary={data.itinerary}
-            />
+            <div className="w-full max-w-7xl">
+              <ItineraryDisplay
+                key={itineraryKey}
+                name={name}
+                itinerary={data.itinerary}
+              />
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

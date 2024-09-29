@@ -249,24 +249,32 @@ export default function ItineraryDisplay({
   };
 
   return (
-    <Card className="h-full w-full mx-auto">
+    <Card className="h-full w-full mx-auto max-w-7xl">
       <CardHeader className="flex justify-between items-center">
-        <CardTitle>{name || `${itinerary} day itinerary`}</CardTitle>
+        <CardTitle className="text-xl sm:text-2xl md:text-3xl">
+          {name || `${itinerary} day itinerary`}
+        </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2 sm:p-4 md:p-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="preview">Preview</TabsTrigger>
-            <TabsTrigger value="raw">Raw</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="preview" className="text-sm sm:text-base">
+              Preview
+            </TabsTrigger>
+            <TabsTrigger value="raw" className="text-sm sm:text-base">
+              Raw
+            </TabsTrigger>
           </TabsList>
           <TabsContent
             value="preview"
-            className="flex flex-col md:flex-row gap-4 mx-20"
+            className="flex flex-col md:flex-row gap-4 lg:mx-4 xl:mx-8"
           >
-            <ScrollArea className="lg:h-[600px] h-auto w-full rounded-md border p-4">
+            <ScrollArea className="h-[400px] sm:h-[500px] md:h-[600px] w-full rounded-md border p-2 sm:p-4">
               {itinerary.map((day, dayIndex) => (
-                <div key={dayIndex} className="mb-6">
-                  <h2 className="text-xl font-bold mb-2">{day.day}</h2>
+                <div key={dayIndex} className="mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold mb-2">
+                    {day.day}
+                  </h2>
                   {displayedActivities
                     .filter(
                       (_, index) =>
@@ -275,23 +283,28 @@ export default function ItineraryDisplay({
                     )
                     .map((activity, actIndex) => (
                       <div
-                        className="mb-4 p-4 bg-secondary rounded-lg flex flex-col md:flex-row "
+                        className="mb-4 p-2 sm:p-4 bg-secondary rounded-lg flex flex-col md:flex-row"
                         key={actIndex}
                       >
-                        {" "}
-                        <div key={actIndex} className="flex-1 md:mr-2">
-                          <p className="font-semibold">{activity.time}</p>
-                          <p className="text-lg">{activity.activity}</p>
-                          <p className="text-sm text-muted-foreground">
+                        <div className="flex-1 md:mr-2 mb-2 md:mb-0">
+                          <p className="font-semibold text-sm sm:text-base">
+                            {activity.time}
+                          </p>
+                          <p className="text-base sm:text-lg">
+                            {activity.activity}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
                             {activity.location}
                           </p>
-                          <p className="text-sm mt-2">{activity.notes}</p>
-                          <p className="text-sm font-semibold mt-1">
+                          <p className="text-xs sm:text-sm mt-1 sm:mt-2">
+                            {activity.notes}
+                          </p>
+                          <p className="text-xs sm:text-sm font-semibold mt-1">
                             {activity.cost}
                           </p>
                         </div>
                         {activity.lat && activity.long && (
-                          <div className="flex-1 md:ml-2 mt-4 md:mt-0 md:w-1/3">
+                          <div className="flex-1 md:ml-2 mt-2 md:mt-0 h-40 sm:h-48 md:h-auto md:w-1/3">
                             <MapComponent
                               lat={activity.lat}
                               lng={activity.long}
@@ -305,46 +318,47 @@ export default function ItineraryDisplay({
               ))}
             </ScrollArea>
           </TabsContent>
-          <TabsContent value="raw" className="mx-20">
-            <ScrollArea className="lg:h-[600px] h-auto w-full rounded-md border p-4 ">
-              <pre className="font-mono text-sm whitespace-pre-wrap break-words">
+          <TabsContent value="raw" className="mx-2 sm:mx-4 md:mx-8 lg:mx-12">
+            <ScrollArea className="h-[400px] sm:h-[500px] md:h-[600px] w-full rounded-md border p-2 sm:p-4">
+              <pre className="font-mono text-xs sm:text-sm whitespace-pre-wrap break-words">
                 {displayedContent}
               </pre>
             </ScrollArea>
           </TabsContent>
         </Tabs>
       </CardContent>
-      <CardFooter className="flex flex-wrap justify-between gap-2">
+      <CardFooter className="flex flex-wrap justify-center sm:justify-between gap-2 p-2 sm:p-4">
         <Button
           onClick={() => handleDownload("txt")}
-          // disabled={isStreaming}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-xs sm:text-sm"
         >
-          <Download size={16} />
+          <Download size={14} className="hidden sm:inline" />
           Download TXT
         </Button>
         <Button
           onClick={() => handleDownload("pdf")}
-          // disabled={true}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-xs sm:text-sm"
         >
-          <FileText size={16} />
+          <FileText size={14} className="hidden sm:inline" />
           Download PDF
         </Button>
         <Button
           onClick={() => handleDownload("ics")}
           disabled={true}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-xs sm:text-sm"
         >
-          <Calendar size={16} />
+          <Calendar size={14} className="hidden sm:inline" />
           Download ICS
         </Button>
         <Button
           onClick={handleCopy}
-          // disabled={isStreaming}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 text-xs sm:text-sm"
         >
-          {isCopied ? <CheckCircle size={16} /> : <Copy size={16} />}
+          {isCopied ? (
+            <CheckCircle size={14} className="hidden sm:inline" />
+          ) : (
+            <Copy size={14} className="hidden sm:inline" />
+          )}
           {isCopied ? "Copied!" : "Copy"}
         </Button>
       </CardFooter>
