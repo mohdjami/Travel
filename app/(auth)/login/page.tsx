@@ -3,12 +3,16 @@ import { getServerUser } from "@/utils/users/server";
 import { redirect } from "next/navigation";
 import React from "react";
 
-const page = async () => {
+const page = async ({
+  searchParams,
+}: {
+  searchParams: { message: string };
+}) => {
   const user = await getServerUser();
   if (user) {
     redirect("/itinerary");
   }
-  return <LoginPage />;
+  return <LoginPage message={searchParams.message} />;
 };
 
 export default page;

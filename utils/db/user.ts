@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { User } from "@supabase/supabase-js";
+import { NextResponse } from "next/server";
 
 export async function createUser(user: User) {
   const supabase = await createClient();
@@ -19,7 +20,9 @@ export async function createUser(user: User) {
   }
   if (UserError) {
     console.log("Error creating user:", UserError);
-    return UserError;
+    return NextResponse.redirect(
+      `${origin}/login/Error Creating User, Please try email Login.`
+    );
   }
 }
 

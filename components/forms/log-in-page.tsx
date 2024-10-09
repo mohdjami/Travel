@@ -29,7 +29,7 @@ const loginSchema = z.object({
   }),
 });
 
-export default function LoginPage() {
+export default function LoginPage({ message }: { message?: string }) {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -136,6 +136,11 @@ export default function LoginPage() {
           Sign up
         </Link>
       </p>
+      {message && (
+        <div className="bg-red-100 p-4 text-red-700 rounded-md text-sm">
+          {message}
+        </div>
+      )}
     </div>
   );
 }
