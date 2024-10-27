@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       email: email,
       id: authData?.user?.id,
     });
-    if (insertError || authError) {
+    if (authError) {
       return NextResponse.json({ error: insertError });
     }
     return NextResponse.json({

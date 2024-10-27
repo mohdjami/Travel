@@ -9,8 +9,13 @@ import {
   updateUserCredits,
 } from "../../../utils/db/db";
 import { revalidatePath } from "next/cache";
+import { Client } from "@upstash/qstash";
 const API_KEY = process.env.GOOGLE_API_KEY!;
+
 export const maxDuration = 60;
+
+const client = new Client({ token: process.env.QSTASH_TOKEN! });
+
 export async function POST(req: Request, res: Response) {
   try {
     const {
@@ -21,7 +26,6 @@ export async function POST(req: Request, res: Response) {
       budget,
       interests,
     } = await req.json();
-
     const [supabase, user] = await Promise.all([
       createClient(),
       getServerUser(),
@@ -48,6 +52,7 @@ export async function POST(req: Request, res: Response) {
         { status: 400 }
       );
     }
+    //essential
     const credits = await getUserCredits(user.id);
     if (credits <= 0) {
       return NextResponse.json(
@@ -58,16 +63,6 @@ export async function POST(req: Request, res: Response) {
       );
     }
     // console.log(currentLocation, travelLocation, startDate, endDate, budget);
-    //Insert these details into user preferneces table in supabase
-    await createUserPreferences(
-      currentLocation,
-      travelLocation,
-      startDate,
-      endDate,
-      budget,
-      interests,
-      user.id
-    );
     const prompt = `Create a detailed travel itinerary for a trip from ${currentLocation} to ${travelLocation}, starting on ${startDate} and ending on ${endDate}, with a ${budget} budget. Please provide a day-by-day schedule in the following JSON format:
 
     {
@@ -95,12 +90,12 @@ export async function POST(req: Request, res: Response) {
 
     Last but not least, send me back json object only.
 `;
+
     //We will also cache the similar responses
     const genAI = new GoogleGenerativeAI(API_KEY);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
 
-    // console.log(result.response.text());
     const text = result.response
       .text()
       .replaceAll("```json", "")
@@ -109,8 +104,24 @@ export async function POST(req: Request, res: Response) {
     const name = `${currentLocation.split(",")[0]} to ${
       travelLocation.split(",")[0]
     }`;
-    await createResponse(name, json, user.id);
-    await updateUserCredits(user.id);
+
+    //not critical
+    //Insert these details into user preferneces table in supabase
+    //not critical push them to the queue
+    const res = await client.publishJSON({
+      url: `${process.env.NEXT_PUBLIC_URL}/api/process`,
+      body: {
+        currentLocation,
+        travelLocation,
+        startDate,
+        endDate,
+        budget,
+        interests,
+        userid: user.id,
+        name,
+        itinerary: json,
+      },
+    });
     revalidatePath("/");
     return NextResponse.json({ itinerary: json });
   } catch (error) {
