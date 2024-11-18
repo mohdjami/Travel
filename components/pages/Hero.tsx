@@ -70,7 +70,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4"
+            className="flex items-center justify-center flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4"
           >
             <Button
               size="lg"
