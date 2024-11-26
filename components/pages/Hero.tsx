@@ -16,7 +16,6 @@ import {
   Compass,
 } from "lucide-react";
 import Link from "next/link";
-import { MdDeveloperMode } from "react-icons/md";
 import { BsYoutube } from "react-icons/bs";
 
 export default function Hero() {

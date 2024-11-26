@@ -32,7 +32,7 @@ const GithubLoginButton = () => {
   return (
     <>
       <Button
-        variant="outline"
+        variant="secondary"
         type="button"
         disabled={isLoading}
         onClick={handleGithubLogin}
