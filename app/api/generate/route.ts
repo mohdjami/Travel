@@ -30,6 +30,7 @@ export async function POST(req: Request, res: Response) {
       createClient(),
       getServerUser(),
     ]);
+
     if (!user) {
       return NextResponse.json(
         {
@@ -122,6 +123,7 @@ export async function POST(req: Request, res: Response) {
         itinerary: json,
       },
     });
+    console.log("userid", user.id);
     revalidatePath("/");
     return NextResponse.json({ itinerary: json });
   } catch (error) {
