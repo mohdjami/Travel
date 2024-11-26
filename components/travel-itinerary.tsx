@@ -12,21 +12,11 @@ import {
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Download,
-  Copy,
-  CheckCircle,
-  FileText,
-  Calendar,
-  ArrowLeft,
-} from "lucide-react";
+import { Download, Copy, CheckCircle, FileText, Calendar } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { jsPDF } from "jspdf";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L, { LatLngExpression } from "leaflet";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 const MapComponent = dynamic(
   () => import("@/components/map-component").then((mod) => mod.MapComponent),
   {
