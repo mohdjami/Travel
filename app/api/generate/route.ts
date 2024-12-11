@@ -110,7 +110,7 @@ export async function POST(req: Request, res: Response) {
     //Insert these details into user preferneces table in supabase
     //not critical push them to the queue
     const res = await client.publishJSON({
-      url: `https://fine-candies-see.loca.lt/api/process`,
+      url: `${process.env.NEXT_PUBLIC_URL}/api/process`,
       body: {
         currentLocation,
         travelLocation,
