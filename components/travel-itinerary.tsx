@@ -43,11 +43,13 @@ interface DayItinerary {
 interface ItineraryDisplayProps {
   name?: string;
   itinerary: DayItinerary[];
+  id: number;
 }
 
 export default function ItineraryDisplay({
   name,
   itinerary,
+  id,
 }: ItineraryDisplayProps) {
   const [displayedContent, setDisplayedContent] = useState("");
   const [displayedActivities, setDisplayedActivities] = useState<Activity[]>(
@@ -216,7 +218,16 @@ export default function ItineraryDisplay({
       }
     );
   };
-
+ const handleDelete = async (id: number) => {  
+    const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/delete-itinerary`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id }),
+    });
+    window.location.reload();
+  }
   const handleCopy = () => {
     navigator.clipboard
       .writeText(contentRef.current)
@@ -260,7 +271,7 @@ export default function ItineraryDisplay({
             className="flex flex-col md:flex-row gap-4 lg:mx-4 xl:mx-8"
           >
             <ScrollArea className="h-[400px] sm:h-[500px] md:h-[600px] w-full rounded-md border p-2 sm:p-4">
-              {itinerary.map((day, dayIndex) => (
+              {itinerary ? itinerary.map((day, dayIndex) => (
                 <div key={dayIndex} className="mb-4 sm:mb-6">
                   <h2 className="text-lg sm:text-xl font-bold mb-2">
                     {day.day}
@@ -305,7 +316,7 @@ export default function ItineraryDisplay({
                       </div>
                     ))}
                 </div>
-              ))}
+              )) : <>Loading</>}
             </ScrollArea>
           </TabsContent>
           <TabsContent value="raw" className="mx-2 sm:mx-4 md:mx-8 lg:mx-12">
@@ -333,12 +344,12 @@ export default function ItineraryDisplay({
           Download PDF
         </Button>
         <Button
-          onClick={() => handleDownload("ics")}
-          disabled={true}
+          onClick={() => handleDelete(id)}
           className="flex items-center gap-2 text-xs sm:text-sm"
+          variant={"destructive"}
         >
           <Calendar size={14} className="hidden sm:inline" />
-          Download ICS
+          Delete Itinerary
         </Button>
         <Button
           onClick={handleCopy}

@@ -30,13 +30,19 @@ export async function createUserPreferences(
 
 export async function createResponse(
   name: string,
-  itinerary: string,
+  json: string,
   userId: string
 ) {
   const supabase = createClient();
+  // json = {
+  //   itinerary: [
+  //     { day: 'December 16, 2024', activities: [Array] },
+  //     { day: 'December 17, 2024', activities: [Array] }
+  //   ]
+  // }
   const { error: errorResponse } = await supabase.from("response").insert({
     name,
-    response: itinerary,
+    response: json,
     userid: userId,
   });
   if (errorResponse) {
@@ -61,9 +67,11 @@ export async function getUserCredits(userId: string) {
 
 export async function updateUserCredits(userId: string) {
   const supabase = createClient();
-  const { error: errorUpdate } = await supabase.rpc("decrement", {
-    user_id: userId,
-  });
+  let credits = await getUserCredits(userId);
+  credits -=1;
+  const { error: errorUpdate } = await supabase.from("users").update({
+    credits,
+  }).eq("id", userId);
   if (errorUpdate) {
     console.log(errorUpdate);
     return NextResponse.json({ error: errorUpdate.message });

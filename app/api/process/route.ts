@@ -8,16 +8,21 @@ import {
 
 export const POST = verifySignatureAppRouter(async (req: Request) => {
   const body = await req.json();
-  await createUserPreferences(
-    body.currentLocation,
-    body.travelLocation,
-    body.startDate,
-    body.endDate,
-    body.budget,
-    body.interests,
-    body.userid
-  );
-  await createResponse(body.name, body.itinerary.itinerary, body.userid);
-  await updateUserCredits(body.userid);
+  try {
+    await createUserPreferences(
+      body.currentLocation,
+      body.travelLocation,
+      body.startDate,
+      body.endDate,
+      body.budget,
+      body.interests,
+      body.userid
+    );
+    await createResponse(body.name, body.json, body.userid);
+    await updateUserCredits(body.userid);
+  } catch (error) {
+    console.log(error);
+    return new Response(`Error: ${error}`);
+  }
   return new Response(`Done Successfully`);
 });

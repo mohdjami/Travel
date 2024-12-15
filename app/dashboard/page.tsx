@@ -17,7 +17,6 @@ const page = async () => {
     .order("created_at", { ascending: false })
     .eq("userid", user?.id);
   const credits = await getUserCredits(user?.id);
-
   if (error || !data || data.length === 0) {
     console.log(error);
     return <div>Error: {error?.message}</div>;

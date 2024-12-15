@@ -102,6 +102,7 @@ export async function POST(req: Request, res: Response) {
       .replaceAll("```json", "")
       .replaceAll("```", "");
     const json = JSON.parse(text);
+    console.log(json);
     const name = `${currentLocation.split(",")[0]} to ${
       travelLocation.split(",")[0]
     }`;
@@ -109,6 +110,7 @@ export async function POST(req: Request, res: Response) {
     //not critical
     //Insert these details into user preferneces table in supabase
     //not critical push them to the queue
+  
     const res = await client.publishJSON({
       url: `${process.env.NEXT_PUBLIC_URL}/api/process`,
       body: {
@@ -120,7 +122,7 @@ export async function POST(req: Request, res: Response) {
         interests,
         userid: user.id,
         name,
-        itinerary: json,
+        json,
       },
     });
     console.log("userid", user.id);
