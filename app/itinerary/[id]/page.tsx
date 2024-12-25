@@ -21,7 +21,7 @@ const page = async ({
     .single();
   return (
     <div>
-      <ItineraryDisplay itinerary={data.response.itinerary} />
+      <ItineraryDisplay id={+params.id} itinerary={data.response.itinerary} />
     </div>
   );
 };
