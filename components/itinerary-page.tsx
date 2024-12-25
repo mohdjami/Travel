@@ -3,12 +3,12 @@
 import { useState } from "react";
 import TravelItineraryForm from "./forms/travel-form";
 import { RequestCredits } from "./request-credits";
-const ItineraryHome = ({ initialCredits }: { initialCredits: number }) => {
+const ItineraryHome = ({ email, initialCredits }: {email: string; initialCredits: number }) => {
   const [credits, setCredits] = useState(initialCredits);
 
   
   return (
-    <TravelItineraryForm initialCredits={credits} setCredits={setCredits} />
+    <TravelItineraryForm email={email} initialCredits={credits} setCredits={setCredits} />
   );
 };
 
