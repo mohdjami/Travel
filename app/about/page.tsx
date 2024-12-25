@@ -3,7 +3,7 @@ import React from "react";
 
 const page = () => {
   return (
-    <div className="m-20">
+    <div className="lg:m-20 m-5">
       <AboutPage />
     </div>
   );
