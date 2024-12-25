@@ -38,7 +38,7 @@ const UserAccountNav = ({ user }: { user: User }) => {
               />
             ) : (
               <AvatarFallback>
-                {user?.user_metadata.full_name?.charAt(0).toUpperCase()}
+                {user?.user_metadata.full_name?.charAt(0).toUpperCase() || user?.user_metadata.email.charAt(0).toUpperCase()}
               </AvatarFallback>
             )}
           </Avatar>
