@@ -44,7 +44,7 @@ const page = async () => {
     </div>
   </div>
   }
-  return <Dashboard data={data} credits={credits} />;
+  return <Dashboard email={user?.user_metadata.email} data={data} credits={credits} />;
 };
 
 export default page;
