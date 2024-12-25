@@ -4,9 +4,10 @@ import Link from "next/link"
 import Image from "next/image"
 import { Mail } from "lucide-react"
 
-export const RequestCredits = (email:{
+export const RequestCredits = ({email}:{
     email: string
 }) => {   
+
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-yellow-50 to-orange-100 p-4">
         <Card className="w-full max-w-md">
