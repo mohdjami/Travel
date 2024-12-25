@@ -5,13 +5,14 @@ import { getUserCredits } from "../../utils/db/db";
 
 export default async function Home() {
   const user = await getServerUser();
+  const email = user?.user_metadata.email;
   if (!user) {
     redirect("/login");
   }
   const credits = await getUserCredits(user?.id);
   
   if (!credits) {
-    return <ItineraryHome initialCredits={0} />;
+    return <ItineraryHome email={email} initialCredits={0} />;
   }
-  return <ItineraryHome initialCredits={credits} />;
+  return <ItineraryHome email={email} initialCredits={credits} />;
 }

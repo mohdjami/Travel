@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "@/hooks/use-toast";
 import ItineraryDisplay from "../travel-itinerary";
 import { motion, AnimatePresence } from "framer-motion";
+import { RequestCredits } from "../request-credits";
 
 const formSchema = z
   .object({
@@ -69,9 +70,11 @@ const LoadingSpinner = () => (
 );
 
 export default function TravelItineraryForm({
+  email,
   initialCredits,
   setCredits,
 }: {
+  email: string;
   initialCredits: number;
   setCredits: (credits: number) => void;
 }) {
@@ -372,6 +375,7 @@ export default function TravelItineraryForm({
           </motion.div>
         )}
       </AnimatePresence>
+      <RequestCredits email={email} />
     </main>
   );
 }

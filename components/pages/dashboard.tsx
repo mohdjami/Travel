@@ -6,12 +6,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { PlusIcon, MessageSquare, Delete, DeleteIcon } from "lucide-react";
 import ItineraryDisplay from "../travel-itinerary";
 import Link from "next/link";
-import { clsx } from 'clsx';
+import { RequestCredits } from "../request-credits";
 
 export default function Dashboard({
+  email,
   data,
   credits,
 }: {
+  email: string;
   data: {
     id: number;
     name: string;
@@ -119,6 +121,9 @@ export default function Dashboard({
             }
           })}
         </div>
+        {credits <= 0 && (
+         <RequestCredits email={email} />
+        )}
       </div>
     </div>
   );
