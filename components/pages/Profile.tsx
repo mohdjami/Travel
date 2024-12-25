@@ -143,7 +143,7 @@ export default function ProfileSettingsPage({ user }: { user: User }) {
                     src={user?.user_metadata?.avatar_url}
                     alt="Profile picture"
                   />
-                  <AvatarFallback>{user.email?.charAt(0)}</AvatarFallback>
+                  <AvatarFallback>{user?.user_metadata.full_name?.charAt(0) || user.user_metadata.email.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <Button variant="outline">Change Avatar</Button>
               </div>
