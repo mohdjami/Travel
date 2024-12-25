@@ -11,7 +11,7 @@ export default async function Home() {
   const credits = await getUserCredits(user?.id);
   
   if (!credits) {
-    return <ItineraryHome initialCredits={5} />;
+    return <ItineraryHome initialCredits={0} />;
   }
   return <ItineraryHome initialCredits={credits} />;
 }

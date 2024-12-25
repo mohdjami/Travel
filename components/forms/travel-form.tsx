@@ -363,6 +363,7 @@ export default function TravelItineraryForm({
           >
             <div className="w-full max-w-7xl">
               <ItineraryDisplay
+                id={itineraryKey}
                 key={itineraryKey}
                 name={name}
                 itinerary={data.itinerary}
