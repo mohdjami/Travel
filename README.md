@@ -1,4 +1,4 @@
-Github: https://github.com/mohdjami/Travel
+[Github](https://github.com/mohdjami/AI-Travel-Itinerary)
 
 Deployed Link: https://travelplanai.vercel.app/
 
