@@ -26,12 +26,10 @@ export async function POST(req: Request, res: Response) {
       budget,
       interests,
     } = await req.json();
-    const [supabase, user] = await Promise.all([
-      createClient(),
-      getServerUser(),
-    ]);
+   const user = await getServerUser()
 
-    if (!user) {
+
+  if (!user) {
       return NextResponse.json(
         {
           error: "User not found",
@@ -102,7 +100,6 @@ export async function POST(req: Request, res: Response) {
       .replaceAll("```json", "")
       .replaceAll("```", "");
     const json = JSON.parse(text);
-    console.log(json);
     const name = `${currentLocation.split(",")[0]} to ${
       travelLocation.split(",")[0]
     }`;
@@ -111,7 +108,7 @@ export async function POST(req: Request, res: Response) {
     //Insert these details into user preferneces table in supabase
     //not critical push them to the queue
   
-    const res = await client.publishJSON({
+    await client.publishJSON({
       url: `${process.env.NEXT_PUBLIC_URL}/api/process`,
       body: {
         currentLocation,
@@ -125,7 +122,6 @@ export async function POST(req: Request, res: Response) {
         json,
       },
     });
-    console.log("userid", user.id);
     revalidatePath("/");
     return NextResponse.json({ itinerary: json });
   } catch (error) {

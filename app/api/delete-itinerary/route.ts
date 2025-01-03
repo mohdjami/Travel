@@ -6,7 +6,11 @@ export async function DELETE(req: NextRequest) {
   try {
   const { id } = await req.json();
   const supabase = createClient();
-  const response = await supabase.from("response").delete().match({ id });
+  const {data: response, error } = await supabase.from("response").delete().match({ id });
+  if(error){
+    console.log(error);
+    return NextResponse.json({ error: error.message }, { status: 400 });
+  }
   revalidatePath("/");
   return NextResponse.json({ message: "Itinerary deleted successfully" });
   } catch (error) {
