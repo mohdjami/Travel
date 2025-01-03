@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { getServerUser } from "@/utils/users/server";
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request, res: Response) {
@@ -19,6 +20,7 @@ export async function GET(req: Request, res: Response) {
       console.log(error);
       return NextResponse.json({ error }, { status: 400 });
     }
+    revalidatePath("/");
     return NextResponse.json({ credits: data?.credits });
   } catch (error) {
     console.log(error);

@@ -5,6 +5,7 @@ import {
   createUserPreferences,
   updateUserCredits,
 } from "@/utils/db/db";
+import { revalidatePath } from "next/cache";
 
 export const POST = verifySignatureAppRouter(async (req: Request) => {
   const body = await req.json();
@@ -20,6 +21,7 @@ export const POST = verifySignatureAppRouter(async (req: Request) => {
     );
     await createResponse(body.name, body.json, body.userid);
     await updateUserCredits(body.userid);
+    revalidatePath("/");
   } catch (error) {
     console.log(error);
     return new Response(`Error: ${error}`);
